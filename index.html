@@ -173,8 +173,12 @@
   .browse-head h2{font-family:var(--font-display); font-size:24px; font-weight:600; color:var(--green-900);}
   .sort-select{font-family:var(--font-body); font-size:13px; padding:8px 12px; border-radius:var(--radius-sm); border:1px solid var(--gray-300); background:#fff; color:var(--gray-700);}
   .filter-pills{display:flex; gap:9px; flex-wrap:wrap; padding-bottom:24px;}
-  .pill{font-size:12.5px; font-weight:600; padding:8px 16px; border-radius:999px; border:1.4px solid var(--gray-300); background:#fff; color:var(--gray-700); cursor:pointer;}
+  .pill{font-family:var(--font-body); font-size:12.5px; font-weight:600; padding:8px 16px; border-radius:999px; border:1.4px solid var(--gray-300); background:#fff; color:var(--gray-700); cursor:pointer; transition:background .12s, border-color .12s, color .12s;}
+  .pill:hover{border-color:var(--green-500);}
+  .pill:focus-visible{outline:2px solid var(--green-600); outline-offset:2px;}
   .pill.active{background:var(--green-700); border-color:var(--green-700); color:#fff;}
+  .filter-empty-msg{font-size:13.5px; color:var(--gray-600); margin:-8px 0 24px;}
+  .filter-empty-msg a{color:var(--green-600); font-weight:600; text-decoration:underline;}
 
   /* ===== DEAL GRID ===== */
   .deal-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; padding-bottom:20px;}
@@ -585,24 +589,25 @@
       </select>
     </div>
 
-    <div class="filter-pills">
-      <span class="pill active">All sectors</span>
-      <span class="pill">Trade &amp; import</span>
-      <span class="pill">Real estate</span>
-      <span class="pill">Agriculture</span>
-      <span class="pill">Manufacturing</span>
-      <span class="pill">Low risk</span>
-      <span class="pill">Medium risk</span>
-      <span class="pill">4–6 months</span>
-      <span class="pill">Up to 2 years</span>
-      <span class="pill">Up to 5 years</span>
-      <span class="pill">Fixed interest</span>
-      <span class="pill">Revenue share</span>
+    <div class="filter-pills" id="filterPills">
+      <button type="button" class="pill active" data-filter="all">All sectors</button>
+      <button type="button" class="pill" data-filter="sector:trade">Trade &amp; import</button>
+      <button type="button" class="pill" data-filter="sector:realestate">Real estate</button>
+      <button type="button" class="pill" data-filter="sector:agri">Agriculture</button>
+      <button type="button" class="pill" data-filter="sector:mfg">Manufacturing</button>
+      <button type="button" class="pill" data-filter="risk:low">Low risk</button>
+      <button type="button" class="pill" data-filter="risk:medium">Medium risk</button>
+      <button type="button" class="pill" data-filter="term:6">4–6 months</button>
+      <button type="button" class="pill" data-filter="term:24">Up to 2 years</button>
+      <button type="button" class="pill" data-filter="term:60">Up to 5 years</button>
+      <button type="button" class="pill" data-filter="interest:fixed">Fixed interest</button>
+      <button type="button" class="pill" data-filter="interest:revenue">Revenue share</button>
     </div>
+    <p class="filter-empty-msg" id="filterEmptyMsg" style="display:none;">No deals match these filters yet. <a href="#" id="filterEmptyClear">Clear filters</a> and try a different combination.</p>
 
     <div class="deal-grid">
 
-      <a class="deal-card" href="deal.html" data-type="investment" data-sector="trade" data-country="Nigeria" data-term-months="18">
+      <a class="deal-card" href="deal.html" data-type="investment" data-sector="trade" data-country="Nigeria" data-term-months="18" data-risk="low" data-interest="fixed">
         <div class="thumb trade">Lagos Foods Co.<span class="fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 8.6c0 4.7-8.8 10.4-8.8 10.4S3.2 13.3 3.2 8.6a4.8 4.8 0 018.8-2.7A4.8 4.8 0 0120.8 8.6z" stroke-linejoin="round"/></svg></span></div>
         <div class="body">
           <div class="tags"><span class="badge badge-neutral">Trade</span><span class="badge badge-success">Low risk</span><span class="badge badge-warning">94% match</span></div>
@@ -613,7 +618,7 @@
         </div>
       </a>
 
-      <a class="deal-card" href="deal.html" data-type="investment" data-sector="realestate" data-country="Ghana" data-term-months="60" data-new="1">
+      <a class="deal-card" href="deal.html" data-type="investment" data-sector="realestate" data-country="Ghana" data-term-months="60" data-new="1" data-risk="medium" data-interest="revenue">
         <div class="thumb realestate">Accra Homes<span class="fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 8.6c0 4.7-8.8 10.4-8.8 10.4S3.2 13.3 3.2 8.6a4.8 4.8 0 018.8-2.7A4.8 4.8 0 0120.8 8.6z" stroke-linejoin="round"/></svg></span></div>
         <div class="body">
           <div class="tags"><span class="badge badge-neutral">Real estate</span><span class="badge badge-warning">Medium risk</span></div>
@@ -624,7 +629,7 @@
         </div>
       </a>
 
-      <a class="deal-card" href="deal.html" data-type="investment" data-sector="agri" data-country="Kenya" data-term-months="12" data-closing="1">
+      <a class="deal-card" href="deal.html" data-type="investment" data-sector="agri" data-country="Kenya" data-term-months="12" data-closing="1" data-risk="low" data-interest="fixed">
         <div class="thumb agri">Rift Valley Agri<span class="fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 8.6c0 4.7-8.8 10.4-8.8 10.4S3.2 13.3 3.2 8.6a4.8 4.8 0 018.8-2.7A4.8 4.8 0 0120.8 8.6z" stroke-linejoin="round"/></svg></span></div>
         <div class="body">
           <div class="tags"><span class="badge badge-neutral">Agriculture</span><span class="badge badge-success">Low risk</span></div>
@@ -635,7 +640,7 @@
         </div>
       </a>
 
-      <a class="deal-card" href="deal.html" data-type="investment" data-sector="mfg" data-country="Ghana" data-term-months="24" data-new="1">
+      <a class="deal-card" href="deal.html" data-type="investment" data-sector="mfg" data-country="Ghana" data-term-months="24" data-new="1" data-risk="medium" data-interest="hybrid">
         <div class="thumb mfg">Kumasi Textiles<span class="fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 8.6c0 4.7-8.8 10.4-8.8 10.4S3.2 13.3 3.2 8.6a4.8 4.8 0 018.8-2.7A4.8 4.8 0 0120.8 8.6z" stroke-linejoin="round"/></svg></span></div>
         <div class="body">
           <div class="tags"><span class="badge badge-neutral">Manufacturing</span><span class="badge badge-warning">Medium risk</span></div>
@@ -646,7 +651,7 @@
         </div>
       </a>
 
-      <a class="deal-card" href="deal.html" data-type="investment" data-sector="trade" data-country="Sierra Leone" data-term-months="6" data-closing="1">
+      <a class="deal-card" href="deal.html" data-type="investment" data-sector="trade" data-country="Sierra Leone" data-term-months="6" data-closing="1" data-risk="low" data-interest="fixed">
         <div class="thumb trade" style="background:linear-gradient(135deg, var(--green-700), var(--green-500));">Freetown Spice Traders<span class="fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 8.6c0 4.7-8.8 10.4-8.8 10.4S3.2 13.3 3.2 8.6a4.8 4.8 0 018.8-2.7A4.8 4.8 0 0120.8 8.6z" stroke-linejoin="round"/></svg></span></div>
         <div class="body">
           <div class="tags"><span class="badge badge-neutral">Trade</span><span class="badge badge-success">Low risk</span></div>
@@ -668,7 +673,7 @@
         </div>
       </a>
 
-      <a class="deal-card" href="deal.html" data-type="investment" data-sector="agri" data-country="Uganda" data-term-months="24" data-new="1">
+      <a class="deal-card" href="deal.html" data-type="investment" data-sector="agri" data-country="Uganda" data-term-months="24" data-new="1" data-risk="low" data-interest="revenue">
         <div class="thumb agri" style="background:linear-gradient(135deg, #3B6D11, #97C459);">Kampala Coffee Collective<span class="fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 8.6c0 4.7-8.8 10.4-8.8 10.4S3.2 13.3 3.2 8.6a4.8 4.8 0 018.8-2.7A4.8 4.8 0 0120.8 8.6z" stroke-linejoin="round"/></svg></span></div>
         <div class="body">
           <div class="tags"><span class="badge badge-neutral">Agriculture</span><span class="badge badge-success">Low risk</span></div>
@@ -701,7 +706,7 @@
         </div>
       </a>
 
-      <a class="deal-card is-hidden" href="deal.html" data-type="investment" data-sector="realestate" data-country="Rwanda" data-term-months="60" data-new="1">
+      <a class="deal-card is-hidden" href="deal.html" data-type="investment" data-sector="realestate" data-country="Rwanda" data-term-months="60" data-new="1" data-risk="medium" data-interest="revenue">
         <div class="thumb realestate" style="background:linear-gradient(135deg, var(--gold-400), var(--gold-100));">Kigali Green Homes<span class="fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 8.6c0 4.7-8.8 10.4-8.8 10.4S3.2 13.3 3.2 8.6a4.8 4.8 0 018.8-2.7A4.8 4.8 0 0120.8 8.6z" stroke-linejoin="round"/></svg></span></div>
         <div class="body">
           <div class="tags"><span class="badge badge-neutral">Real estate</span><span class="badge badge-warning">Medium risk</span></div>
@@ -723,7 +728,7 @@
         </div>
       </a>
 
-      <a class="deal-card is-hidden" href="deal.html" data-type="investment" data-sector="mfg" data-country="Ghana" data-term-months="18" data-new="1">
+      <a class="deal-card is-hidden" href="deal.html" data-type="investment" data-sector="mfg" data-country="Ghana" data-term-months="18" data-new="1" data-risk="medium" data-interest="fixed">
         <div class="thumb mfg" style="background:linear-gradient(135deg, #45433B, #83807A);">Tema Steel Works<span class="fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 8.6c0 4.7-8.8 10.4-8.8 10.4S3.2 13.3 3.2 8.6a4.8 4.8 0 018.8-2.7A4.8 4.8 0 0120.8 8.6z" stroke-linejoin="round"/></svg></span></div>
         <div class="body">
           <div class="tags"><span class="badge badge-neutral">Manufacturing</span><span class="badge badge-warning">Medium risk</span></div>
@@ -956,6 +961,27 @@
   var headingText = { all: 'Browse all deals', investment: 'Browse investment opportunities', sale: 'Browse businesses for sale' };
   var currentType = 'all';
 
+  // sector/risk/term/interest filter pills below the deal-type toggle — each pill
+  // toggles independently and a card must match every active pill (AND across pills)
+  var pillBtns = document.querySelectorAll('#filterPills .pill');
+  var allPillBtn = document.querySelector('#filterPills .pill[data-filter="all"]');
+  var emptyMsg = document.getElementById('filterEmptyMsg');
+  var emptyClearLink = document.getElementById('filterEmptyClear');
+  var activePillFilters = [];
+
+  function cardMatchesPill(card, filterKey){
+    var parts = filterKey.split(':');
+    var cat = parts[0], val = parts[1];
+    if(cat === 'sector') return card.getAttribute('data-sector') === val;
+    if(cat === 'risk') return card.getAttribute('data-risk') === val;
+    if(cat === 'interest') return card.getAttribute('data-interest') === val;
+    if(cat === 'term'){
+      var months = parseInt(card.getAttribute('data-term-months'), 10);
+      return !!months && months <= parseInt(val, 10);
+    }
+    return true;
+  }
+
   // promo tiles (Ghana real estate spotlight, This week, Short term, Closing soon) link here
   // with a ?promo=<key> param — define what each one means and how to describe it.
   var promoMatchers = {
@@ -986,23 +1012,34 @@
   if(activePromo && !promoMatchers[activePromo]) activePromo = null;
 
   function applyVisibility(){
+    var visibleCount = 0;
+    var pillsActive = activePillFilters.length > 0;
     dealCards.forEach(function(card){
       var matchesType = currentType === 'all' || card.getAttribute('data-type') === currentType;
       var matchesPromo = !activePromo || promoMatchers[activePromo].match(card);
-      // a promo filter (e.g. "9 fresh listings") should surface matching cards even if
-      // they're normally held back for the load-more pagination
-      var loadMoreHidden = !activePromo && card.classList.contains('is-hidden');
-      var shouldShow = matchesType && matchesPromo && !loadMoreHidden;
+      var matchesPills = !pillsActive || activePillFilters.every(function(f){ return cardMatchesPill(card, f); });
+      // a promo filter (e.g. "9 fresh listings") or an active pill filter should surface
+      // matching cards even if they're normally held back for the load-more pagination
+      var loadMoreHidden = !activePromo && !pillsActive && card.classList.contains('is-hidden');
+      var shouldShow = matchesType && matchesPromo && matchesPills && !loadMoreHidden;
       // .deal-card.is-hidden{display:none} in CSS beats an empty inline style while the
       // class is still present, so explicitly set 'block' (the card's base display value)
-      // rather than clearing the inline style, and drop the class when a promo surfaces it.
+      // rather than clearing the inline style, and drop the class when a promo/pill surfaces it.
       if(shouldShow){
         card.style.display = 'block';
-        if(activePromo) card.classList.remove('is-hidden');
+        if(activePromo || pillsActive) card.classList.remove('is-hidden');
+        visibleCount++;
       } else {
         card.style.display = 'none';
       }
     });
+    if(emptyMsg) emptyMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+
+  function clearPillFilters(){
+    activePillFilters = [];
+    pillBtns.forEach(function(p){ p.classList.remove('active'); });
+    if(allPillBtn) allPillBtn.classList.add('active');
   }
 
   function renderPromoBanner(){
@@ -1039,6 +1076,34 @@
       applyVisibility();
     });
   });
+
+  pillBtns.forEach(function(pill){
+    pill.addEventListener('click', function(){
+      var key = pill.getAttribute('data-filter');
+      if(key === 'all'){
+        clearPillFilters();
+      } else {
+        var idx = activePillFilters.indexOf(key);
+        if(idx > -1){
+          activePillFilters.splice(idx, 1);
+          pill.classList.remove('active');
+        } else {
+          activePillFilters.push(key);
+          pill.classList.add('active');
+        }
+        if(allPillBtn) allPillBtn.classList.toggle('active', activePillFilters.length === 0);
+      }
+      applyVisibility();
+    });
+  });
+
+  if(emptyClearLink){
+    emptyClearLink.addEventListener('click', function(e){
+      e.preventDefault();
+      clearPillFilters();
+      applyVisibility();
+    });
+  }
 
   if(btn){
     btn.addEventListener('click', function(){
