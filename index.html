@@ -979,7 +979,16 @@
       // a promo filter (e.g. "9 fresh listings") should surface matching cards even if
       // they're normally held back for the load-more pagination
       var loadMoreHidden = !activePromo && card.classList.contains('is-hidden');
-      card.style.display = (matchesType && matchesPromo && !loadMoreHidden) ? '' : 'none';
+      var shouldShow = matchesType && matchesPromo && !loadMoreHidden;
+      // .deal-card.is-hidden{display:none} in CSS beats an empty inline style while the
+      // class is still present, so explicitly set 'block' (the card's base display value)
+      // rather than clearing the inline style, and drop the class when a promo surfaces it.
+      if(shouldShow){
+        card.style.display = 'block';
+        if(activePromo) card.classList.remove('is-hidden');
+      } else {
+        card.style.display = 'none';
+      }
     });
   }
 
