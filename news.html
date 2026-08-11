@@ -200,6 +200,28 @@
   var params = new URLSearchParams(window.location.search);
   var slug = params.get('article');
   var all = Object.keys(articles);
+  var liveHeadline = params.get('headline');
+  var liveSrc = params.get('src');
+
+  if(slug && !articles[slug] && liveHeadline && liveSrc){
+    // live headline from the Mediastack-powered ticker — not one of our written articles, so link out to the real source
+    document.title = liveHeadline + ' — Root ASAP';
+    document.getElementById('articleCard').innerHTML =
+      '<div class="article-eyebrow">Live from Africa</div>' +
+      '<h1>' + liveHeadline.replace(/</g, '&lt;') + '</h1>' +
+      '<div class="article-byline">Sourced via Mediastack</div>' +
+      '<div class="article-body"><p>This headline is pulled live from our African news feed. Read the full story at the original source.</p></div>' +
+      '<div class="article-cta">' +
+        '<div><h4>Read the full article</h4><p>Opens the original source in a new tab.</p></div>' +
+        '<a class="btn-cta" href="' + liveSrc.replace(/"/g, '&quot;') + '" target="_blank" rel="noopener noreferrer">Read on source site</a>' +
+      '</div>';
+    var relatedHtml = all.map(function(s){
+      return '<a class="related-item" href="news.html?article=' + s + '">' + articles[s].title + '</a>';
+    }).join('');
+    document.getElementById('relatedList').innerHTML = relatedHtml;
+    return;
+  }
+
   if(!slug || !articles[slug]) slug = all[0];
   var a = articles[slug];
 

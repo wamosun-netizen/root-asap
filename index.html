@@ -384,9 +384,11 @@
 
       <div class="ticker-col">
         <div class="ticker-head">Latest news from Africa <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <a class="news-item" href="news.html?article=remittances-nigeria">Diaspora remittances to Nigeria hit record high this quarter</a>
-        <a class="news-item" href="news.html?article=kenya-agri-export">Kenya's agri-export sector draws fresh diaspora capital</a>
-        <a class="news-item" href="news.html?article=ghana-real-estate">Ghana real estate demand climbs as diaspora buyers return</a>
+        <div id="newsTickerList">
+          <a class="news-item" href="news.html?article=remittances-nigeria">Diaspora remittances to Nigeria hit record high this quarter</a>
+          <a class="news-item" href="news.html?article=kenya-agri-export">Kenya's agri-export sector draws fresh diaspora capital</a>
+          <a class="news-item" href="news.html?article=ghana-real-estate">Ghana real estate demand climbs as diaspora buyers return</a>
+        </div>
       </div>
 
     </div>
@@ -969,6 +971,34 @@
       applyVisibility();
     });
   }
+})();
+
+// live African news ticker (Mediastack via serverless proxy, falls back to static headlines on any failure)
+(function(){
+  var list = document.getElementById('newsTickerList');
+  if(!list) return;
+
+  function slugify(text){
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 60);
+  }
+
+  fetch('/.netlify/functions/news')
+    .then(function(res){ if(!res.ok) throw new Error('news fetch failed'); return res.json(); })
+    .then(function(data){
+      var articles = (data && data.articles) || [];
+      if(!articles.length) return; // keep static fallback markup already in the DOM
+      var html = articles.slice(0, 3).map(function(a){
+        var slug = slugify(a.title || 'news');
+        return '<a class="news-item" href="news.html?article=' + encodeURIComponent(slug) +
+          '&headline=' + encodeURIComponent(a.title || '') +
+          '&src=' + encodeURIComponent(a.url || '') + '">' +
+          (a.title || '').replace(/</g, '&lt;') + '</a>';
+      }).join('');
+      list.innerHTML = html;
+    })
+    .catch(function(){
+      // network error, missing API key, or function not deployed yet — silently keep the static fallback headlines
+    });
 })();
 </script>
 <script src="notifications.js"></script>
