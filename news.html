@@ -35,13 +35,6 @@
   .logo svg{width:20px; height:20px;}
   .nav-links{display:flex; gap:26px; font-size:13.5px; font-weight:500; color:rgba(255,255,255,0.75);}
   .nav-links a:hover{color:#fff;}
-  .nav-hamburger{display:none; background:none; border:none; padding:6px; margin:0; cursor:pointer; color:#fff; align-items:center; justify-content:center; flex-shrink:0;}
-  .nav-hamburger svg{width:22px; height:22px; display:block;}
-  .nav-drawer{display:none; flex-direction:column; background:var(--green-800);}
-  .nav-drawer.open{display:flex;}
-  .nav-drawer-links{display:flex; flex-direction:column;}
-  .nav-drawer a{display:block; padding:12px 28px; color:rgba(255,255,255,0.85); font-size:14px; font-weight:600; border-bottom:1px solid rgba(255,255,255,0.08); text-decoration:none;}
-  .nav-drawer a:last-child{border-bottom:none;}
   .nav-icons{display:flex; align-items:center; gap:20px; flex-shrink:0;}
   .signup-btn{background:#F4F1E9; color:var(--green-900); font-weight:600; font-size:13px; padding:9px 18px; border-radius:var(--radius-pill); white-space:nowrap;}
   .user-chip-wrap{display:none; align-items:center; gap:12px;}
@@ -83,7 +76,6 @@
     .article-card{padding:26px 22px;}
     .stat-strip{grid-template-columns:1fr;}
     .nav-links{display:none;}
-    .nav-hamburger{display:flex;}
     .nav-inner{gap:10px;}
   }
   @media (max-width:480px){
@@ -123,7 +115,6 @@
       </div>
     </div>
   </div>
-  <div class="nav-drawer" id="navDrawer"></div>
 </nav>
 
 <div class="container">
@@ -260,29 +251,6 @@
   document.getElementById('relatedList').innerHTML = relatedHtml;
 })();
 
-(function(){
-  var hamburger = document.getElementById('navHamburger');
-  var drawer = document.getElementById('navDrawer');
-  if(!hamburger || !drawer) return;
-  var navLinks = document.querySelector('nav.mainnav .nav-links');
-  if(navLinks){
-    var clone = navLinks.cloneNode(true);
-    clone.removeAttribute('id');
-    clone.className = 'nav-drawer-links';
-    drawer.appendChild(clone);
-  }
-  var dashIcon = document.querySelector('nav.mainnav .nav-icons > a.nav-icon');
-  if(dashIcon){
-    var a = document.createElement('a');
-    a.href = dashIcon.getAttribute('href');
-    a.textContent = dashIcon.textContent.trim();
-    drawer.appendChild(a);
-  }
-  hamburger.addEventListener('click', function(){
-    var isOpen = drawer.classList.toggle('open');
-    hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  });
-})();
 </script>
 <script src="notifications.js"></script>
 
