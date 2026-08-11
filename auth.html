@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign up or log in — Root ASAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-50:#EAF4EE; --green-100:#CBE6D6; --green-200:#A0D2B8; --green-300:#6FB894;
+    --green-400:#429973; --green-500:#1F6F4A; --green-600:#175A3B; --green-700:#12472F;
+    --green-800:#0F3D28; --green-900:#0A2A1B;
+    --gold-50:#FBF3E3; --gold-100:#F3DFB0; --gold-200:#E9C67D; --gold-300:#DCAA52;
+    --gold-400:#C8963A; --gold-500:#B8862B; --gold-600:#96701F; --gold-700:#6B4E12;
+    --gray-0:#FFFFFF; --gray-50:#FAFAF8; --gray-100:#F2F1ED; --gray-200:#E4E2DB;
+    --gray-300:#CFCDC3; --gray-400:#A9A69A; --gray-500:#83807A; --gray-600:#605D52;
+    --gray-700:#45433B; --gray-800:#2E2C27; --gray-900:#1A1917;
+    --danger:#B03A2E; --danger-bg:#FDECEA; --danger-text:#7A281E;
+    --success:#1F6F4A; --success-bg:#EAF4EE; --success-text:#12472F;
+    --font-display:'Fraunces', Georgia, serif;
+    --font-body:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius-sm:8px; --radius-md:14px; --radius-lg:20px; --radius-pill:999px;
+    --shadow-card:0 1px 2px rgba(15,61,40,0.05), 0 4px 14px rgba(15,61,40,0.06);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--font-body); font-size:14px; color:var(--gray-900); background:var(--gray-100);}
+  a{color:inherit;}
+  .authwrap{min-height:100vh; display:grid; grid-template-columns:1fr 1fr;}
+
+  /* LEFT BRAND PANEL */
+  .brand-panel{background:linear-gradient(160deg, var(--green-900), var(--green-700) 65%, var(--green-500)); color:#fff; padding:48px; display:flex; flex-direction:column; justify-content:space-between;}
+  .brand-logo{display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-weight:600; font-size:19px;}
+  .brand-logo svg{width:20px; height:20px;}
+  .brand-copy h1{font-family:var(--font-display); font-size:36px; font-weight:600; line-height:1.2; max-width:460px; margin-bottom:18px;}
+  .brand-copy p{color:rgba(255,255,255,0.75); font-size:15px; max-width:420px; line-height:1.6;}
+  .brand-points{display:flex; flex-direction:column; gap:14px; margin-top:32px;}
+  .brand-point{display:flex; align-items:center; gap:12px; font-size:13.5px; color:rgba(255,255,255,0.9);}
+  .brand-point .ic{width:30px; height:30px; border-radius:9px; background:rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .brand-point .ic svg{width:15px; height:15px;}
+  .brand-quote{border-top:1px solid rgba(255,255,255,0.15); padding-top:20px; font-size:13px; color:rgba(255,255,255,0.65); line-height:1.6;}
+
+  /* RIGHT FORM PANEL */
+  .form-panel-outer{display:flex; align-items:center; justify-content:center; padding:48px 28px;}
+  .auth-card{width:100%; max-width:420px;}
+  .back-link{display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--gray-500); font-weight:600; margin-bottom:26px;}
+  .back-link:hover{color:var(--green-700);}
+  .back-link svg{width:14px; height:14px;}
+
+  .auth-tabs{display:flex; gap:4px; background:var(--gray-100); border-radius:var(--radius-pill); padding:4px; margin-bottom:28px;}
+  .auth-tab{flex:1; text-align:center; padding:10px; border-radius:var(--radius-pill); font-size:13.5px; font-weight:700; color:var(--gray-600); cursor:pointer;}
+  .auth-tab.active{background:#fff; color:var(--green-800); box-shadow:var(--shadow-card);}
+
+  .auth-form{display:none;}
+  .auth-form.active{display:block;}
+  .auth-form h2{font-family:var(--font-display); font-size:22px; font-weight:600; color:var(--green-900); margin-bottom:6px;}
+  .auth-form .sub{color:var(--gray-500); font-size:13px; margin-bottom:22px;}
+
+  .role-toggle{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:20px;}
+  .role-option{border:1.6px solid var(--gray-300); border-radius:var(--radius-md); padding:12px 10px; cursor:pointer; text-align:left;}
+  .role-option.selected{border-color:var(--green-600); background:var(--green-50);}
+  .role-option .rt{font-weight:700; font-size:12.5px; color:var(--gray-900); margin-bottom:2px;}
+  .role-option .rs{font-size:10.5px; color:var(--gray-500); line-height:1.3;}
+
+  .field{margin-bottom:16px;}
+  .field.hidden{display:none;}
+  .field label{display:block; font-size:12.5px; font-weight:600; color:var(--gray-700); margin-bottom:6px;}
+  .field input{width:100%; border:1.4px solid var(--gray-300); border-radius:var(--radius-sm); padding:11px 13px; font-family:var(--font-body); font-size:13.5px; background:#fff;}
+  .field input:focus{outline:none; border-color:var(--green-500);}
+  .field input.invalid{border-color:var(--danger);}
+  .field-error{font-size:11.5px; color:var(--danger); margin-top:5px; display:none;}
+  .field-error.show{display:block;}
+
+  .check-row{display:flex; align-items:flex-start; gap:9px; margin-bottom:18px;}
+  .check-row input{width:auto; margin-top:2px;}
+  .check-row label{font-size:12.5px; color:var(--gray-600); line-height:1.5;}
+
+  .form-alert{display:none; align-items:flex-start; gap:9px; background:var(--danger-bg); color:var(--danger-text); border-radius:var(--radius-md); padding:12px 14px; font-size:12.5px; margin-bottom:16px; line-height:1.5;}
+  .form-alert.show{display:flex;}
+  .form-alert.success{background:var(--success-bg); color:var(--success-text);}
+  .form-alert svg{width:15px; height:15px; flex-shrink:0; margin-top:1px;}
+
+  .btn-auth{width:100%; background:var(--green-600); color:#fff; border:none; border-radius:var(--radius-pill); padding:13px; font-family:var(--font-body); font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;}
+  .btn-auth:hover{background:var(--green-500);}
+  .btn-auth[disabled]{opacity:0.6; cursor:not-allowed;}
+  .spin{width:14px; height:14px; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%; animation:spin 0.8s linear infinite; display:none;}
+  .spin.show{display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .switch-line{text-align:center; font-size:12.5px; color:var(--gray-500); margin-top:18px;}
+  .switch-line a{color:var(--green-700); font-weight:700; cursor:pointer;}
+  .forgot-link{display:block; text-align:right; font-size:12px; color:var(--green-700); font-weight:600; margin:-8px 0 18px; cursor:pointer;}
+  .proto-note{font-size:11px; color:var(--gray-400); text-align:center; margin-top:22px; line-height:1.5;}
+
+  @media (max-width:880px){
+    .authwrap{grid-template-columns:1fr;}
+    .brand-panel{display:none;}
+  }
+  @media (max-width:420px){
+    .role-toggle{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="authwrap">
+
+  <div class="brand-panel">
+    <a class="brand-logo" href="index.html">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="19" stroke="#E9C67D" stroke-width="1.2"/>
+        <path d="M20 11 L20 22" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 14 L15 9" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 14 L25 9" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 22 C 20 22, 13 24, 11 30" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M20 22 C 20 22, 20 26, 20 31" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M20 22 C 20 22, 27 24, 29 30" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+      Root ASAP
+    </a>
+    <div class="brand-copy">
+      <h1>Direct diaspora investment, without the gatekeepers.</h1>
+      <p>Join as an investor to back vetted Africa-linked businesses, or as a business owner to raise from diaspora capital directly — matched by AI, introduced with a click.</p>
+      <div class="brand-points">
+        <div class="brand-point"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>KYC &amp; identity verified on both sides</div>
+        <div class="brand-point"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Every deal vetted before it goes live</div>
+        <div class="brand-point"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>AI-matched to sector, term and location</div>
+      </div>
+    </div>
+    <div class="brand-quote">"Root ASAP introduced us to investors we'd never have reached from London. We agreed terms directly and closed in three weeks." — Tunde Adeyemi, Lagos Foods Co.</div>
+  </div>
+
+  <div class="form-panel-outer">
+    <div class="auth-card">
+      <a class="back-link" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to home</a>
+
+      <div class="auth-tabs">
+        <div class="auth-tab active" data-tab="signup">Sign up</div>
+        <div class="auth-tab" data-tab="login">Log in</div>
+      </div>
+
+      <!-- SIGN UP -->
+      <form class="auth-form active" id="signupForm" novalidate>
+        <h2>Create your account</h2>
+        <p class="sub">Set up your Root ASAP account in a couple of minutes.</p>
+
+        <div class="form-alert" id="signupAlert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01" stroke-linecap="round"/></svg><span id="signupAlertText"></span></div>
+
+        <div class="role-toggle">
+          <div class="role-option selected" data-role="investor">
+            <div class="rt">Investor</div>
+            <div class="rs">Back diaspora-linked deals</div>
+          </div>
+          <div class="role-option" data-role="business">
+            <div class="rt">Business owner</div>
+            <div class="rs">Raise from diaspora investors</div>
+          </div>
+          <div class="role-option" data-role="broker">
+            <div class="rt">Broker / agent</div>
+            <div class="rs">Source deals &amp; earn commission</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="suName">Full name</label>
+          <input type="text" id="suName" placeholder="e.g. Adaeze Obi" />
+          <div class="field-error" id="suNameError">Enter your full name.</div>
+        </div>
+
+        <div class="field hidden" id="suBusinessNameField">
+          <label for="suBusinessName">Business name</label>
+          <input type="text" id="suBusinessName" placeholder="e.g. Lagos Foods Co." />
+          <div class="field-error" id="suBusinessNameError">Enter your business name.</div>
+        </div>
+
+        <div class="field hidden" id="suAgencyNameField">
+          <label for="suAgencyName">Agency / company name (optional)</label>
+          <input type="text" id="suAgencyName" placeholder="e.g. Adeyemi Business Brokers" />
+        </div>
+
+        <div class="field">
+          <label for="suLocation" id="suLocationLabel">Country of residence</label>
+          <input type="text" id="suLocation" placeholder="e.g. United Kingdom" />
+          <div class="field-error" id="suLocationError">Enter a location.</div>
+        </div>
+
+        <div class="field">
+          <label for="suEmail">Email address</label>
+          <input type="email" id="suEmail" placeholder="you@example.com" />
+          <div class="field-error" id="suEmailError">Enter a valid email address.</div>
+        </div>
+
+        <div class="field">
+          <label for="suPassword">Password</label>
+          <input type="password" id="suPassword" placeholder="At least 8 characters" />
+          <div class="field-error" id="suPasswordError">Password must be at least 8 characters.</div>
+        </div>
+
+        <div class="field">
+          <label for="suConfirm">Confirm password</label>
+          <input type="password" id="suConfirm" placeholder="Re-enter your password" />
+          <div class="field-error" id="suConfirmError">Passwords don't match.</div>
+        </div>
+
+        <div class="check-row">
+          <input type="checkbox" id="suTerms" />
+          <label for="suTerms">I agree to Root ASAP's Terms of Use and Privacy Policy, and confirm I'm investing or raising funds on my own behalf.</label>
+        </div>
+        <div class="field-error" id="suTermsError" style="margin:-10px 0 14px;">You need to accept the terms to continue.</div>
+
+        <button type="submit" class="btn-auth" id="signupSubmit"><span class="spin" id="signupSpin"></span><span id="signupSubmitText">Create account</span></button>
+
+        <div class="switch-line">Already have an account? <a data-tab="login">Log in</a></div>
+      </form>
+
+      <!-- LOG IN -->
+      <form class="auth-form" id="loginForm" novalidate>
+        <h2>Welcome back</h2>
+        <p class="sub">Log in to your Root ASAP account.</p>
+
+        <div class="form-alert" id="loginAlert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01" stroke-linecap="round"/></svg><span id="loginAlertText"></span></div>
+
+        <div class="field">
+          <label for="liEmail">Email address</label>
+          <input type="email" id="liEmail" placeholder="you@example.com" />
+          <div class="field-error" id="liEmailError">Enter a valid email address.</div>
+        </div>
+
+        <div class="field">
+          <label for="liPassword">Password</label>
+          <input type="password" id="liPassword" placeholder="Your password" />
+          <div class="field-error" id="liPasswordError">Enter your password.</div>
+        </div>
+
+        <a class="forgot-link" id="forgotLink">Forgot password?</a>
+
+        <button type="submit" class="btn-auth" id="loginSubmit"><span class="spin" id="loginSpin"></span><span id="loginSubmitText">Log in</span></button>
+
+        <div class="switch-line">New to Root ASAP? <a data-tab="signup">Create an account</a></div>
+      </form>
+
+      <div class="proto-note">Prototype only — accounts are stored in your browser for this preview, not on a real server.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('.auth-tab, .switch-line a');
+  var forms = { signup: document.getElementById('signupForm'), login: document.getElementById('loginForm') };
+  function showTab(name){
+    document.querySelectorAll('.auth-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-tab') === name); });
+    forms.signup.classList.toggle('active', name === 'signup');
+    forms.login.classList.toggle('active', name === 'login');
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ showTab(t.getAttribute('data-tab')); });
+  });
+
+  // role toggle
+  var roleOptions = document.querySelectorAll('.role-option');
+  var currentRole = 'investor';
+  var bizField = document.getElementById('suBusinessNameField');
+  var agencyField = document.getElementById('suAgencyNameField');
+  var locationLabel = document.getElementById('suLocationLabel');
+  roleOptions.forEach(function(opt){
+    opt.addEventListener('click', function(){
+      roleOptions.forEach(function(o){ o.classList.remove('selected'); });
+      opt.classList.add('selected');
+      currentRole = opt.getAttribute('data-role');
+      bizField.classList.add('hidden');
+      agencyField.classList.add('hidden');
+      if(currentRole === 'business'){
+        bizField.classList.remove('hidden');
+        locationLabel.textContent = 'Business location';
+      } else if(currentRole === 'broker'){
+        agencyField.classList.remove('hidden');
+        locationLabel.textContent = 'Region(s) you operate in';
+      } else {
+        locationLabel.textContent = 'Country of residence';
+      }
+    });
+  });
+
+  function getAccounts(){
+    try { return JSON.parse(localStorage.getItem('rootasap_accounts')) || []; } catch(e){ return []; }
+  }
+  function saveAccounts(list){
+    localStorage.setItem('rootasap_accounts', JSON.stringify(list));
+  }
+  function setSession(account){
+    localStorage.setItem('rootasap_session', JSON.stringify(account));
+  }
+  function emailValid(v){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+  function redirectFor(role){
+    if(role === 'business') return 'business-dashboard.html';
+    if(role === 'broker') return 'broker-dashboard.html';
+    return 'dashboard.html';
+  }
+
+  // SIGN UP submit
+  var signupForm = document.getElementById('signupForm');
+  var signupAlert = document.getElementById('signupAlert');
+  var signupAlertText = document.getElementById('signupAlertText');
+  signupForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    signupAlert.classList.remove('show');
+    var valid = true;
+    function setError(inputId, errorId, isBad){
+      var input = document.getElementById(inputId);
+      var err = document.getElementById(errorId);
+      input.classList.toggle('invalid', isBad);
+      err.classList.toggle('show', isBad);
+      if(isBad) valid = false;
+    }
+
+    var name = document.getElementById('suName').value.trim();
+    var bizName = document.getElementById('suBusinessName').value.trim();
+    var agencyName = document.getElementById('suAgencyName').value.trim();
+    var location = document.getElementById('suLocation').value.trim();
+    var email = document.getElementById('suEmail').value.trim();
+    var password = document.getElementById('suPassword').value;
+    var confirm = document.getElementById('suConfirm').value;
+    var termsChecked = document.getElementById('suTerms').checked;
+
+    setError('suName','suNameError', name.length < 2);
+    if(currentRole === 'business'){
+      setError('suBusinessName','suBusinessNameError', bizName.length < 2);
+    }
+    setError('suLocation','suLocationError', location.length < 2);
+    setError('suEmail','suEmailError', !emailValid(email));
+    setError('suPassword','suPasswordError', password.length < 8);
+    setError('suConfirm','suConfirmError', confirm !== password || password.length < 8);
+    document.getElementById('suTermsError').classList.toggle('show', !termsChecked);
+    if(!termsChecked) valid = false;
+
+    if(!valid) return;
+
+    var accounts = getAccounts();
+    var exists = accounts.some(function(a){ return a.email.toLowerCase() === email.toLowerCase(); });
+    if(exists){
+      signupAlertText.textContent = 'An account with that email already exists. Try logging in instead.';
+      signupAlert.classList.remove('success');
+      signupAlert.classList.add('show');
+      return;
+    }
+
+    var submitBtn = document.getElementById('signupSubmit');
+    var spin = document.getElementById('signupSpin');
+    var label = document.getElementById('signupSubmitText');
+    submitBtn.setAttribute('disabled','disabled');
+    spin.classList.add('show');
+    label.textContent = 'Creating account…';
+
+    setTimeout(function(){
+      var account = { name: name, businessName: bizName, agencyName: agencyName, location: location, email: email, password: password, role: currentRole };
+      accounts.push(account);
+      saveAccounts(accounts);
+      setSession(account);
+      label.textContent = 'Account created — redirecting…';
+      signupAlertText.textContent = 'Account created. Redirecting to your dashboard…';
+      signupAlert.classList.add('show','success');
+      setTimeout(function(){
+        window.location.href = redirectFor(currentRole);
+      }, 700);
+    }, 700);
+  });
+
+  // LOGIN submit
+  var loginForm = document.getElementById('loginForm');
+  var loginAlert = document.getElementById('loginAlert');
+  var loginAlertText = document.getElementById('loginAlertText');
+  loginForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    loginAlert.classList.remove('show');
+    var valid = true;
+    function setError(inputId, errorId, isBad){
+      var input = document.getElementById(inputId);
+      var err = document.getElementById(errorId);
+      input.classList.toggle('invalid', isBad);
+      err.classList.toggle('show', isBad);
+      if(isBad) valid = false;
+    }
+    var email = document.getElementById('liEmail').value.trim();
+    var password = document.getElementById('liPassword').value;
+    setError('liEmail','liEmailError', !emailValid(email));
+    setError('liPassword','liPasswordError', password.length === 0);
+    if(!valid) return;
+
+    var accounts = getAccounts();
+    var account = accounts.find(function(a){ return a.email.toLowerCase() === email.toLowerCase(); });
+    if(!account){
+      loginAlertText.textContent = "No account found for that email. Try creating one instead.";
+      loginAlert.classList.remove('success');
+      loginAlert.classList.add('show');
+      return;
+    }
+    if(account.password !== password){
+      loginAlertText.textContent = 'Incorrect password. Please try again.';
+      loginAlert.classList.remove('success');
+      loginAlert.classList.add('show');
+      return;
+    }
+
+    var submitBtn = document.getElementById('loginSubmit');
+    var spin = document.getElementById('loginSpin');
+    var label = document.getElementById('loginSubmitText');
+    submitBtn.setAttribute('disabled','disabled');
+    spin.classList.add('show');
+    label.textContent = 'Logging in…';
+
+    setTimeout(function(){
+      setSession(account);
+      label.textContent = 'Welcome back — redirecting…';
+      loginAlertText.textContent = 'Logged in. Redirecting to your dashboard…';
+      loginAlert.classList.add('show','success');
+      setTimeout(function(){
+        window.location.href = redirectFor(account.role);
+      }, 600);
+    }, 600);
+  });
+
+  document.getElementById('forgotLink').addEventListener('click', function(){
+    loginAlertText.textContent = "Password reset isn't available in this preview yet — for now, sign up again with a new email.";
+    loginAlert.classList.remove('success');
+    loginAlert.classList.add('show');
+  });
+})();
+</script>
+
+</body>
+</html>

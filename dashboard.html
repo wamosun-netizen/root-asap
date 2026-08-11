@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your dashboard — Root ASAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="notifications.css">
+<style>
+  :root{
+    --green-50:#EAF4EE; --green-100:#CBE6D6; --green-200:#A0D2B8; --green-300:#6FB894;
+    --green-400:#429973; --green-500:#1F6F4A; --green-600:#175A3B; --green-700:#12472F;
+    --green-800:#0F3D28; --green-900:#0A2A1B;
+    --gold-50:#FBF3E3; --gold-100:#F3DFB0; --gold-200:#E9C67D; --gold-300:#DCAA52;
+    --gold-400:#C8963A; --gold-500:#B8862B; --gold-600:#96701F; --gold-700:#6B4E12;
+    --gray-0:#FFFFFF; --gray-50:#FAFAF8; --gray-100:#F2F1ED; --gray-200:#E4E2DB;
+    --gray-300:#CFCDC3; --gray-400:#A9A69A; --gray-500:#83807A; --gray-600:#605D52;
+    --gray-700:#45433B; --gray-800:#2E2C27; --gray-900:#1A1917;
+    --success:#1F6F4A; --success-bg:#EAF4EE; --success-text:#12472F;
+    --warning:#B8862B; --warning-bg:#FBF3E3; --warning-text:#6B4E12;
+    --danger:#B03A2E; --danger-bg:#FDECEA; --danger-text:#7A281E;
+    --info:#2B6CB8; --info-bg:#E7F0FA; --info-text:#1D4E85;
+    --font-display:'Fraunces', Georgia, serif;
+    --font-body:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius-sm:8px; --radius-md:14px; --radius-lg:20px; --radius-pill:999px;
+    --shadow-card:0 1px 2px rgba(15,61,40,0.05), 0 4px 14px rgba(15,61,40,0.06);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--gray-100); color:var(--gray-900); font-family:var(--font-body); font-size:14px; line-height:1.6;}
+  a{color:inherit; text-decoration:none;}
+  .container{max-width:1180px; margin:0 auto; padding:0 28px;}
+  .btn{font-family:var(--font-body); font-weight:600; border-radius:var(--radius-pill); border:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px;}
+  .btn-primary{background:var(--green-600); color:#fff; padding:11px 22px; font-size:13.5px;}
+  .btn-primary:hover{background:var(--green-500);}
+  .btn-outline{background:#fff; color:var(--green-700); border:1.5px solid var(--green-600); padding:9px 18px; font-size:13px;}
+  .btn-gold{background:var(--gold-500); color:#2E2107; padding:11px 22px; font-size:13.5px;}
+  .btn-gold:hover{background:var(--gold-400);}
+
+  /* NAV */
+  nav.mainnav{background:var(--green-900); padding:14px 0;}
+  nav.mainnav .container{display:flex; align-items:center; gap:24px;}
+  .logo{font-family:var(--font-display); font-weight:600; font-size:19px; color:#fff; display:flex; align-items:center; gap:8px; flex-shrink:0;}
+  .logo svg{width:20px; height:20px;}
+  .search-bar{flex:1; display:flex; align-items:center; background:#fff; border-radius:var(--radius-pill); padding:4px 4px 4px 18px; max-width:640px;}
+  .search-bar input{border:none; outline:none; flex:1; font-family:var(--font-body); font-size:14px; padding:9px 0; color:var(--gray-800);}
+  .search-bar input::placeholder{color:var(--gray-400);}
+  .search-bar button{background:var(--gold-500); border:none; border-radius:var(--radius-pill); width:38px; height:38px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#2E2107;}
+  .search-bar button svg{width:17px; height:17px;}
+  .nav-links{display:flex; gap:26px; font-size:13.5px; font-weight:500; color:rgba(255,255,255,0.75); flex-shrink:0;}
+  .nav-links a:hover, .nav-links a.active{color:#fff;}
+  .nav-icons{display:flex; align-items:center; gap:20px; flex-shrink:0;}
+  .nav-icon{display:flex; flex-direction:column; align-items:center; gap:2px; color:rgba(255,255,255,0.85); font-size:11px; font-weight:600;}
+  .nav-icon.active{color:var(--gold-300);}
+  .nav-icon svg{width:19px; height:19px;}
+  .signup-btn{background:#F4F1E9; color:var(--green-900); font-weight:600; font-size:13px; padding:9px 18px; border-radius:var(--radius-pill); white-space:nowrap;}
+  .user-chip-wrap{display:none; align-items:center; gap:12px;}
+  .user-chip{display:flex; align-items:center; gap:8px; color:#fff; font-size:13px; font-weight:600;}
+  .user-avatar{width:28px; height:28px; border-radius:50%; background:var(--gold-400); color:#2E2107; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0;}
+  .logout-link{font-size:12px; color:rgba(255,255,255,0.6); font-weight:600;}
+  .logout-link:hover{color:#fff;}
+
+  /* PAGE HEAD */
+  .page-head{padding:36px 0 8px;}
+  .page-head h1{font-family:var(--font-display); font-size:30px; font-weight:600; color:var(--green-900);}
+  .page-head p{color:var(--gray-600); font-size:14.5px; margin-top:6px;}
+
+  /* PROFILE CARD */
+  .profile-card{background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); padding:22px 26px; margin:22px 0; display:flex; align-items:center; justify-content:space-between; gap:20px; box-shadow:var(--shadow-card); flex-wrap:wrap;}
+  .profile-left{display:flex; align-items:center; gap:16px;}
+  .avatar-lg{width:52px; height:52px; border-radius:50%; background:var(--green-100); color:var(--green-700); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:17px; flex-shrink:0;}
+  .profile-label{font-size:11.5px; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;}
+  .chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .chip{font-size:12px; font-weight:600; padding:5px 12px; border-radius:999px; background:var(--green-50); color:var(--green-700);}
+
+  /* AI MATCHING PANEL */
+  .match-panel{background:linear-gradient(135deg, var(--green-900), var(--green-700)); border-radius:var(--radius-lg); padding:30px 32px; margin-bottom:26px; color:#fff;}
+  .match-panel-top{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap;}
+  .match-panel h2{font-family:var(--font-display); font-size:22px; font-weight:600;}
+  .match-panel p{color:rgba(255,255,255,0.75); font-size:13.5px; margin-top:6px; max-width:580px;}
+  .match-controls-block{margin-top:22px;}
+  .match-controls-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:rgba(255,255,255,0.55); margin-bottom:8px;}
+  .match-controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px;}
+  .match-controls select{border-radius:var(--radius-pill); border:none; padding:10px 16px; font-size:13px; font-family:var(--font-body); font-weight:600; color:var(--green-800);}
+  .hub-chip{font-size:12.5px; font-weight:600; padding:7px 15px; border-radius:999px; background:rgba(255,255,255,0.12); border:1.4px solid rgba(255,255,255,0.3); color:#fff; cursor:pointer;}
+  .hub-chip.active{background:var(--gold-400); border-color:var(--gold-400); color:#2E2107;}
+  .match-run-row{display:flex; align-items:center; gap:14px; margin-top:6px; flex-wrap:wrap;}
+  .match-spinner{display:none; align-items:center; gap:8px; font-size:12.5px; color:rgba(255,255,255,0.8);}
+  .match-spinner.show{display:flex;}
+  .spin{width:14px; height:14px; border:2px solid rgba(255,255,255,0.35); border-top-color:#fff; border-radius:50%; animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .results-meta{font-size:12.5px; color:var(--gray-500); margin-bottom:16px;}
+  .badge-invest{background:var(--info-bg); color:var(--info-text);}
+  .badge-sale{background:var(--gold-50); color:var(--gold-700);}
+  .amount-line{font-size:11px; color:var(--gray-600); display:flex; align-items:center; gap:6px; margin-top:8px;}
+
+  /* METRIC CARDS */
+  .metric-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:30px;}
+  .metric-card{background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-md); padding:20px 22px; box-shadow:var(--shadow-card);}
+  .metric-card .label{font-size:12px; color:var(--gray-500); margin-bottom:8px;}
+  .metric-card .value{font-family:var(--font-display); font-size:28px; font-weight:600; color:var(--green-800);}
+  .metric-card .sub{font-size:11.5px; color:var(--gray-500); margin-top:4px;}
+
+  /* FILTER TABS */
+  .filter-tabs{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;}
+  .tab{font-size:13px; font-weight:600; padding:9px 18px; border-radius:999px; border:1.4px solid var(--gray-300); background:#fff; color:var(--gray-700); cursor:pointer;}
+  .tab.active{background:var(--green-700); border-color:var(--green-700); color:#fff;}
+
+  /* DEAL TABLE */
+  .deal-table-wrap{background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-card); margin-bottom:44px;}
+  table.dash{width:100%; border-collapse:collapse; font-size:13px;}
+  table.dash th{text-align:left; color:var(--gray-500); font-weight:600; padding:14px 18px; border-bottom:1.5px solid var(--gray-200); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; background:var(--gray-50);}
+  table.dash td{padding:16px 18px; border-bottom:1px solid var(--gray-100); vertical-align:middle;}
+  table.dash tr:last-child td{border-bottom:none;}
+  table.dash tr.dash-row:hover{background:var(--gray-50);}
+  .dash-deal-name{font-weight:600; color:var(--gray-900); font-family:var(--font-display); font-size:14.5px;}
+  .dash-deal-name a{color:inherit;}
+  .dash-deal-name a:hover{color:var(--green-700);}
+  .match-pill{display:inline-flex; align-items:center; gap:5px; font-weight:700; font-size:12.5px; color:var(--green-700);}
+  .match-pill svg{width:13px; height:13px;}
+  .status-badge{font-size:11px; font-weight:700; padding:5px 12px; border-radius:999px; white-space:nowrap;}
+  .status-saved{background:var(--gray-100); color:var(--gray-600);}
+  .status-sent{background:var(--info-bg); color:var(--info-text);}
+  .status-awaiting{background:var(--warning-bg); color:var(--warning-text);}
+  .status-connected{background:var(--success-bg); color:var(--success-text);}
+
+  /* RECOMMENDED */
+  .section-head{max-width:600px; margin-bottom:22px;}
+  .section-head h2{font-family:var(--font-display); font-size:22px; font-weight:600; color:var(--green-900);}
+  .section-head p{color:var(--gray-600); font-size:13.5px; margin-top:6px;}
+  .deal-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:20px;}
+  .deal-card{display:block; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-card); transition:transform .15s ease;}
+  .deal-card:hover{transform:translateY(-2px);}
+  .deal-card .thumb{height:96px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:var(--font-display); font-size:12.5px; text-align:center; padding:0 12px;}
+  .deal-card .body{padding:14px 15px;}
+  .badge{font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:999px;}
+  .badge-neutral{background:var(--gray-100); color:var(--gray-700);}
+  .badge-success{background:var(--success-bg); color:var(--success-text);}
+  .badge-warning{background:var(--warning-bg); color:var(--warning-text);}
+  .tags{display:flex; gap:5px; margin-bottom:8px; flex-wrap:wrap;}
+  .deal-card h4{font-family:var(--font-display); font-size:14.5px; margin-bottom:3px;}
+  .deal-card .meta{font-size:10.5px; color:var(--gray-500);}
+
+  /* EXPLAINER */
+  .explainer{background:var(--green-50); border-radius:var(--radius-lg); padding:26px 30px; display:flex; gap:16px; align-items:flex-start; margin-bottom:60px;}
+  .explainer .icon{width:34px; height:34px; border-radius:10px; background:#fff; color:var(--green-700); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .explainer .icon svg{width:17px; height:17px;}
+  .explainer h4{font-size:14.5px; color:var(--green-800); margin-bottom:6px;}
+  .explainer p{font-size:13px; color:var(--green-800); opacity:0.85; line-height:1.6;}
+
+  footer{background:var(--green-900); padding:40px 0;}
+  footer .container{display:flex; justify-content:space-between; align-items:center; color:rgba(255,255,255,0.5); font-size:12px;}
+  footer .flogo{font-family:var(--font-display); color:#fff; font-weight:600; font-size:15px;}
+
+  @media (max-width:1000px){
+    .metric-grid{grid-template-columns:repeat(2,1fr);}
+    .deal-grid{grid-template-columns:repeat(2,1fr);}
+    .nav-links{display:none;}
+    .profile-card{flex-direction:column; align-items:flex-start;}
+    table.dash{display:block; overflow-x:auto; white-space:nowrap;}
+  }
+
+  @media (max-width:600px){
+    .metric-grid{grid-template-columns:1fr;}
+    .deal-grid{grid-template-columns:1fr;}
+    .match-controls-block .match-controls{gap:8px;}
+    .match-panel{padding:24px 20px;}
+    .container{padding:0 18px;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="mainnav">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="19" stroke="#E9C67D" stroke-width="1.2"/>
+        <path d="M20 11 L20 22" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 14 L15 9" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 14 L25 9" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 22 C 20 22, 13 24, 11 30" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M20 22 C 20 22, 20 26, 20 31" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M20 22 C 20 22, 27 24, 29 30" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+      Root ASAP
+    </a>
+    <div class="search-bar">
+      <input type="text" placeholder="Search deals — e.g. real estate, Ghana, trade..." />
+      <button aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html#browse">Marketplace</a>
+      <a href="index.html#how">How it works</a>
+      <a href="business-dashboard.html">For business owners</a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menu" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg></button>
+    <div class="nav-icons">
+      <a class="nav-icon active" href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5" stroke-linecap="round"/></svg>Dashboard</a>
+      <div class="notif-bell-wrap" id="notifBellWrap"></div>
+      <a class="signup-btn" href="auth.html" id="signupBtn">Sign up</a>
+      <div class="user-chip-wrap" id="userChipWrap">
+        <a class="user-chip" id="userChipLink" href="dashboard.html"><span class="user-avatar" id="userAvatarInitials">--</span><span id="userChipName">Name</span></a>
+        <a class="logout-link" id="logoutLink" href="#">Log out</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="page-head">
+    <h1>Welcome back, <span id="welcomeName">William</span></h1>
+    <p>Here's what's happening across the deals you're following.</p>
+  </div>
+
+  <div class="profile-card">
+    <div class="profile-left">
+      <div class="avatar-lg">WA</div>
+      <div>
+        <div class="profile-label">Your investor profile</div>
+        <div class="chip-row">
+          <span class="chip">Balanced risk</span>
+          <span class="chip">Up to 2 years</span>
+          <span class="chip">Trade &amp; import</span>
+          <span class="chip">Real estate</span>
+          <span class="chip">£250–£1,000 typical ticket</span>
+        </div>
+      </div>
+    </div>
+    <a class="btn btn-outline" href="#" data-modal-open="investorProfileModal">Retake matching questionnaire</a>
+  </div>
+
+  <div class="modal-overlay" id="investorProfileModal" role="dialog" aria-modal="true" aria-label="Retake matching questionnaire">
+    <div class="modal-card">
+      <button type="button" class="modal-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg></button>
+      <h3>Retake matching questionnaire</h3>
+      <p class="modal-intro">These answers power your AI deal matching. Update them any time your investing preferences change — your previous answers are shown below.</p>
+      <div class="modal-form-grid">
+        <div class="modal-field">
+          <label>Risk tolerance</label>
+          <select id="qRisk">
+            <option value="cautious">Cautious</option>
+            <option value="balanced">Balanced</option>
+            <option value="growth">Growth-focused</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Preferred investment term</label>
+          <select id="qTerm">
+            <option value="6m">Up to 6 months</option>
+            <option value="12m">Up to 12 months</option>
+            <option value="18m">Up to 18 months</option>
+            <option value="2y">Up to 2 years</option>
+            <option value="5y">Up to 5 years</option>
+          </select>
+        </div>
+        <div class="modal-field full">
+          <label>Sectors of interest</label>
+          <div class="modal-chip-select" id="qSectors">
+            <span class="mchip" data-value="trade">Trade &amp; import</span>
+            <span class="mchip" data-value="realestate">Real estate</span>
+            <span class="mchip" data-value="agriculture">Agriculture</span>
+            <span class="mchip" data-value="manufacturing">Manufacturing</span>
+          </div>
+        </div>
+        <div class="modal-field full">
+          <label>Typical ticket size</label>
+          <select id="qTicket">
+            <option value="250-1000">£250–£1,000</option>
+            <option value="1000-5000">£1,000–£5,000</option>
+            <option value="5000-10000">£5,000–£10,000</option>
+            <option value="10000plus">£10,000+</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <span class="modal-save-msg" id="qSaveMsg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>Saved</span>
+        <button type="button" class="btn btn-outline modal-close">Cancel</button>
+        <button type="button" class="btn btn-primary" id="qSaveBtn">Save profile</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="match-panel">
+    <div class="match-panel-top">
+      <div>
+        <h2>AI deal matching</h2>
+        <p>Root ASAP scores every live listing against your investor profile — balanced risk, trade &amp; import and real estate, up to 2-year terms, £250–£1,000 typical ticket — and ranks the best fits first.</p>
+      </div>
+    </div>
+    <div class="match-controls-block">
+      <div class="match-controls-label">Deal type</div>
+      <div class="match-controls" id="typeChips">
+        <span class="hub-chip active" data-type="all">All deals</span>
+        <span class="hub-chip" data-type="investment">Investment opportunities</span>
+        <span class="hub-chip" data-type="sale">Businesses for sale</span>
+      </div>
+      <div class="match-controls-label">Sector</div>
+      <div class="match-controls" id="sectorChips">
+        <span class="hub-chip active" data-sector="all">All sectors</span>
+        <span class="hub-chip" data-sector="trade">Trade &amp; import</span>
+        <span class="hub-chip" data-sector="realestate">Real estate</span>
+        <span class="hub-chip" data-sector="agriculture">Agriculture</span>
+        <span class="hub-chip" data-sector="manufacturing">Manufacturing</span>
+      </div>
+      <div class="match-controls-label">Country</div>
+      <div class="match-controls">
+        <select id="countrySelect">
+          <option value="all">Any country</option>
+          <option value="nigeria">Nigeria</option>
+          <option value="ghana">Ghana</option>
+          <option value="kenya">Kenya</option>
+          <option value="senegal">Senegal</option>
+          <option value="rwanda">Rwanda</option>
+          <option value="uganda">Uganda</option>
+          <option value="cotedivoire">Côte d'Ivoire</option>
+          <option value="sierraleone">Sierra Leone</option>
+        </select>
+      </div>
+    </div>
+    <div class="match-run-row">
+      <button class="btn btn-gold" id="runMatchBtn">Run AI matching</button>
+      <div class="match-spinner" id="matchSpinner"><span class="spin"></span> Scanning the marketplace for your best matches…</div>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="label">Deals followed</div>
+      <div class="value">6</div>
+      <div class="sub">Across 4 sectors</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">Interest expressed</div>
+      <div class="value">£4,750</div>
+      <div class="sub">Indicative, across 3 deals</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">Introductions made</div>
+      <div class="value">2</div>
+      <div class="sub">Awaiting or in progress</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">Avg. match score</div>
+      <div class="value">89%</div>
+      <div class="sub">On deals you've followed</div>
+    </div>
+  </div>
+
+  <div class="filter-tabs">
+    <span class="tab active" data-filter="all">All (6)</span>
+    <span class="tab" data-filter="sent">Interest expressed (2)</span>
+    <span class="tab" data-filter="awaiting">Introduced (1)</span>
+    <span class="tab" data-filter="connected">Connected (1)</span>
+    <span class="tab" data-filter="saved">Saved only (2)</span>
+  </div>
+
+  <div class="deal-table-wrap">
+    <table class="dash">
+      <tr>
+        <th>Deal</th>
+        <th>Sector</th>
+        <th>Match</th>
+        <th>Indicative amount</th>
+        <th>Status</th>
+        <th>Last update</th>
+      </tr>
+      <tr class="dash-row" data-status="sent">
+        <td class="dash-deal-name"><a href="deal.html">Lagos Foods Co.</a></td>
+        <td>Trade &amp; import</td>
+        <td><span class="match-pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>94%</span></td>
+        <td>£500</td>
+        <td><span class="status-badge status-sent">Interest sent</span></td>
+        <td>2 Aug 2026</td>
+      </tr>
+      <tr class="dash-row" data-status="awaiting">
+        <td class="dash-deal-name"><a href="deal.html">Accra Homes</a></td>
+        <td>Real estate</td>
+        <td><span class="match-pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>81%</span></td>
+        <td>£1,000</td>
+        <td><span class="status-badge status-awaiting">Introduced — awaiting reply</span></td>
+        <td>28 Jul 2026</td>
+      </tr>
+      <tr class="dash-row" data-status="saved">
+        <td class="dash-deal-name"><a href="deal.html">Rift Valley Agri</a></td>
+        <td>Agriculture</td>
+        <td><span class="match-pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>76%</span></td>
+        <td>£250</td>
+        <td><span class="status-badge status-saved">Saved only</span></td>
+        <td>25 Jul 2026</td>
+      </tr>
+      <tr class="dash-row" data-status="saved">
+        <td class="dash-deal-name"><a href="deal.html">Kumasi Textiles</a></td>
+        <td>Manufacturing</td>
+        <td><span class="match-pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>68%</span></td>
+        <td>—</td>
+        <td><span class="status-badge status-saved">Saved only</span></td>
+        <td>20 Jul 2026</td>
+      </tr>
+      <tr class="dash-row" data-status="connected">
+        <td class="dash-deal-name"><a href="deal.html">Nairobi Rise Apartments</a></td>
+        <td>Real estate</td>
+        <td><span class="match-pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>62%</span></td>
+        <td>£3,250</td>
+        <td><span class="status-badge status-connected">Connected — finalising terms</span></td>
+        <td>15 Jul 2026</td>
+      </tr>
+      <tr class="dash-row" data-status="sent">
+        <td class="dash-deal-name"><a href="deal.html">Freetown Spice Traders</a></td>
+        <td>Trade &amp; import</td>
+        <td><span class="match-pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>71%</span></td>
+        <td>£1,000</td>
+        <td><span class="status-badge status-sent">Interest sent</span></td>
+        <td>10 Jul 2026</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section-head">
+    <h2>Your matched deals</h2>
+    <p class="results-meta" id="resultsMeta" style="margin-top:6px;">Matched to your investor profile · ranked by match score</p>
+  </div>
+  <div class="deal-grid" id="dealGrid"></div>
+
+  <div class="explainer">
+    <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div>
+      <h4>What this dashboard tracks</h4>
+      <p>This shows deals you've saved or expressed interest in, and how far each introduction has progressed — it isn't a live investment portfolio. Root ASAP never holds your funds or verifies a completed transaction; once you and a business owner agree terms, that investment is finalised directly between you.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <span class="flogo">Root ASAP</span>
+    <span>© 2026 Root ASAP · <a href="index.html" style="color:rgba(255,255,255,0.7);">Back to home</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var session = null;
+  try { session = JSON.parse(localStorage.getItem('rootasap_session')); } catch(e){}
+  if(session && session.name){
+    var signupBtn = document.getElementById('signupBtn');
+    var chipWrap = document.getElementById('userChipWrap');
+    var chipLink = document.getElementById('userChipLink');
+    var avatarEl = document.getElementById('userAvatarInitials');
+    var nameEl = document.getElementById('userChipName');
+    var logoutLink = document.getElementById('logoutLink');
+    var welcomeEl = document.getElementById('welcomeName');
+    var dashboardUrl = session.role === 'business' ? 'business-dashboard.html' : (session.role === 'broker' ? 'broker-dashboard.html' : 'dashboard.html');
+    var displayName = session.name;
+    if(signupBtn) signupBtn.style.display = 'none';
+    if(chipWrap) chipWrap.style.display = 'flex';
+    var initials = displayName.split(' ').map(function(p){ return p[0]; }).join('').slice(0,2).toUpperCase();
+    if(avatarEl) avatarEl.textContent = initials;
+    if(nameEl) nameEl.textContent = displayName.split(' ')[0];
+    if(chipLink) chipLink.setAttribute('href', dashboardUrl);
+    if(welcomeEl) welcomeEl.textContent = displayName.split(' ')[0];
+    if(logoutLink) logoutLink.addEventListener('click', function(e){
+      e.preventDefault();
+      localStorage.removeItem('rootasap_session');
+      window.location.href = 'index.html';
+    });
+  }
+})();
+
+(function(){
+  var tabs = document.querySelectorAll('.tab');
+  var rows = document.querySelectorAll('.dash-row');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+      var filter = tab.getAttribute('data-filter');
+      rows.forEach(function(row){
+        row.style.display = (filter === 'all' || row.getAttribute('data-status') === filter) ? '' : 'none';
+      });
+    });
+  });
+})();
+
+(function(){
+  // AI deal matching — matches marketplace listings against the investor's saved profile
+  var deals = [
+    {name:'Lagos Foods Co.', sector:'trade', sectorLabel:'Trade & import', country:'nigeria', countryLabel:'Nigeria', type:'investment', score:94, amount:'£500 ticket', term:'12 months', link:'deal.html', gradient:'linear-gradient(135deg, var(--green-600), var(--green-300))'},
+    {name:'Abidjan Cocoa Exports', sector:'trade', sectorLabel:'Trade & import', country:'cotedivoire', countryLabel:"Côte d'Ivoire", type:'investment', score:90, amount:'£750 ticket', term:'12 months', link:'deal.html', gradient:'linear-gradient(135deg, var(--green-500), var(--green-300))'},
+    {name:'Kampala Coffee Collective', sector:'agriculture', sectorLabel:'Agriculture', country:'uganda', countryLabel:'Uganda', type:'investment', score:85, amount:'£600 ticket', term:'2 years', link:'deal.html', gradient:'linear-gradient(135deg, #3B6D11, #97C459)'},
+    {name:'Accra Homes', sector:'realestate', sectorLabel:'Real estate', country:'ghana', countryLabel:'Ghana', type:'sale', score:81, amount:'£210,000 asking', term:'Offers close in 4 weeks', link:'deal-sale.html', gradient:'linear-gradient(135deg, var(--gold-500), var(--gold-200))'},
+    {name:'Dakar Furniture Works', sector:'manufacturing', sectorLabel:'Manufacturing', country:'senegal', countryLabel:'Senegal', type:'sale', score:79, amount:'£180,000 asking', term:'Offers close in 6 weeks', link:'deal-sale.html', gradient:'linear-gradient(135deg, var(--gold-600), var(--gold-300))'},
+    {name:'Kigali Green Homes', sector:'realestate', sectorLabel:'Real estate', country:'rwanda', countryLabel:'Rwanda', type:'investment', score:74, amount:'£1,250 ticket', term:'5 years', link:'deal.html', gradient:'linear-gradient(135deg, var(--gold-400), var(--gold-100))'},
+    {name:'Rift Valley Agri', sector:'agriculture', sectorLabel:'Agriculture', country:'kenya', countryLabel:'Kenya', type:'investment', score:76, amount:'£250 ticket', term:'18 months', link:'deal.html', gradient:'linear-gradient(135deg, #2F5D2A, #8FB96B)'},
+    {name:'Freetown Spice Traders', sector:'trade', sectorLabel:'Trade & import', country:'sierraleone', countryLabel:'Sierra Leone', type:'investment', score:71, amount:'£1,000 ticket', term:'12 months', link:'deal.html', gradient:'linear-gradient(135deg, var(--green-500), var(--gold-300))'},
+    {name:'Kumasi Textiles', sector:'manufacturing', sectorLabel:'Manufacturing', country:'ghana', countryLabel:'Ghana', type:'investment', score:68, amount:'£400 ticket', term:'9 months', link:'deal.html', gradient:'linear-gradient(135deg, var(--green-800), var(--green-400))'},
+    {name:'Adaeze Foods', sector:'trade', sectorLabel:'Trade & import', country:'nigeria', countryLabel:'Nigeria', type:'sale', score:66, amount:'£40,000 asking', term:'Offers close in 8 weeks', link:'deal-sale.html', gradient:'linear-gradient(135deg, var(--gold-500), var(--gold-100))'},
+    {name:'Nairobi Rise Apartments', sector:'realestate', sectorLabel:'Real estate', country:'kenya', countryLabel:'Kenya', type:'investment', score:62, amount:'£3,250 ticket', term:'7 years', link:'deal.html', gradient:'linear-gradient(135deg, var(--gold-600), var(--gold-200))'}
+  ];
+
+  var typeChips = document.querySelectorAll('#typeChips .hub-chip');
+  var sectorChips = document.querySelectorAll('#sectorChips .hub-chip');
+  var countrySelect = document.getElementById('countrySelect');
+  var runBtn = document.getElementById('runMatchBtn');
+  var spinner = document.getElementById('matchSpinner');
+  var dealGrid = document.getElementById('dealGrid');
+  var resultsMeta = document.getElementById('resultsMeta');
+  var activeType = 'all';
+  var activeSector = 'all';
+
+  function scoreBadgeClass(score){
+    return score >= 85 ? 'badge-success' : (score >= 70 ? 'badge-warning' : 'badge-neutral');
+  }
+
+  function applyFilters(){
+    var country = countrySelect.value;
+    return deals.filter(function(d){
+      return (activeType === 'all' || d.type === activeType) &&
+             (activeSector === 'all' || d.sector === activeSector) &&
+             (country === 'all' || d.country === country);
+    }).sort(function(a,b){ return b.score - a.score; });
+  }
+
+  function renderDeals(list){
+    dealGrid.innerHTML = '';
+    list.forEach(function(d){
+      var a = document.createElement('a');
+      a.className = 'deal-card';
+      a.href = d.link;
+      a.innerHTML =
+        '<div class="thumb" style="background:' + d.gradient + ';">' + d.name + '</div>' +
+        '<div class="body">' +
+          '<div class="tags"><span class="badge badge-neutral">' + d.sectorLabel + '</span><span class="badge ' + scoreBadgeClass(d.score) + '">' + d.score + '% match</span></div>' +
+          '<h4>' + d.name + '</h4>' +
+          '<div class="meta">' + d.countryLabel + ' · ' + d.term + '</div>' +
+          '<div class="amount-line"><span class="badge ' + (d.type === 'sale' ? 'badge-sale' : 'badge-invest') + '">' + (d.type === 'sale' ? 'For sale' : 'Investment') + '</span>' + d.amount + '</div>' +
+        '</div>';
+      dealGrid.appendChild(a);
+    });
+    var filtered = activeType !== 'all' || activeSector !== 'all' || countrySelect.value !== 'all';
+    resultsMeta.textContent = list.length + (list.length === 1 ? ' deal matched' : ' deals matched') + ' to your investor profile · ranked by match score' + (filtered ? ' · filters applied' : '');
+  }
+
+  typeChips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      typeChips.forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      activeType = chip.getAttribute('data-type');
+    });
+  });
+  sectorChips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      sectorChips.forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      activeSector = chip.getAttribute('data-sector');
+    });
+  });
+
+  runBtn.addEventListener('click', function(){
+    spinner.classList.add('show');
+    runBtn.disabled = true;
+    setTimeout(function(){
+      spinner.classList.remove('show');
+      runBtn.disabled = false;
+      var matched = applyFilters();
+      renderDeals(matched);
+      document.getElementById('dealGrid').scrollIntoView({behavior:'smooth', block:'start'});
+      if(window.RootASAPNotify){
+        window.RootASAPNotify.push({
+          type: 'match',
+          title: 'AI matching complete',
+          message: matched.length + (matched.length === 1 ? ' deal matches' : ' deals match') + ' your investor profile.'
+        });
+      }
+    }, 1200);
+  });
+
+  // initial render on page load
+  renderDeals(applyFilters());
+})();
+
+(function(){
+  var STORAGE_KEY = 'rootasap_investor_profile';
+  var RISK_LABELS = {cautious:'Cautious', balanced:'Balanced risk', growth:'Growth-focused'};
+  var TERM_LABELS = {'6m':'Up to 6 months', '12m':'Up to 12 months', '18m':'Up to 18 months', '2y':'Up to 2 years', '5y':'Up to 5 years'};
+  var SECTOR_LABELS = {trade:'Trade & import', realestate:'Real estate', agriculture:'Agriculture', manufacturing:'Manufacturing'};
+  var TICKET_LABELS = {'250-1000':'£250–£1,000 typical ticket', '1000-5000':'£1,000–£5,000 typical ticket', '5000-10000':'£5,000–£10,000 typical ticket', '10000plus':'£10,000+ typical ticket'};
+  var defaults = { risk:'balanced', term:'2y', sectors:['trade','realestate'], ticket:'250-1000' };
+
+  function loadProfile(){
+    try {
+      var saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if(saved && saved.risk) return saved;
+    } catch(e){}
+    return defaults;
+  }
+
+  function renderChips(profile){
+    var chipRow = document.querySelector('.profile-card .chip-row');
+    if(!chipRow) return;
+    var sectorChips = profile.sectors.map(function(s){ return '<span class="chip">' + SECTOR_LABELS[s] + '</span>'; }).join('');
+    chipRow.innerHTML =
+      '<span class="chip">' + RISK_LABELS[profile.risk] + '</span>' +
+      '<span class="chip">' + TERM_LABELS[profile.term] + '</span>' +
+      sectorChips +
+      '<span class="chip">' + TICKET_LABELS[profile.ticket] + '</span>';
+  }
+
+  function populateForm(profile){
+    var riskEl = document.getElementById('qRisk');
+    var termEl = document.getElementById('qTerm');
+    var ticketEl = document.getElementById('qTicket');
+    if(riskEl) riskEl.value = profile.risk;
+    if(termEl) termEl.value = profile.term;
+    if(ticketEl) ticketEl.value = profile.ticket;
+    document.querySelectorAll('#qSectors .mchip').forEach(function(chip){
+      chip.classList.toggle('selected', profile.sectors.indexOf(chip.getAttribute('data-value')) !== -1);
+    });
+  }
+
+  var profile = loadProfile();
+  renderChips(profile);
+  populateForm(profile);
+
+  document.querySelectorAll('#qSectors .mchip').forEach(function(chip){
+    chip.addEventListener('click', function(){ chip.classList.toggle('selected'); });
+  });
+
+  var saveBtn = document.getElementById('qSaveBtn');
+  var saveMsg = document.getElementById('qSaveMsg');
+  if(saveBtn){
+    saveBtn.addEventListener('click', function(){
+      var selectedSectors = Array.prototype.slice.call(document.querySelectorAll('#qSectors .mchip.selected')).map(function(c){ return c.getAttribute('data-value'); });
+      if(selectedSectors.length === 0) selectedSectors = [defaults.sectors[0]];
+      profile = {
+        risk: document.getElementById('qRisk').value,
+        term: document.getElementById('qTerm').value,
+        sectors: selectedSectors,
+        ticket: document.getElementById('qTicket').value
+      };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); } catch(e){}
+      renderChips(profile);
+      if(saveMsg){
+        saveMsg.classList.add('show');
+        setTimeout(function(){ saveMsg.classList.remove('show'); }, 2200);
+      }
+      if(window.RootASAPNotify){
+        window.RootASAPNotify.push({
+          type: 'system',
+          title: 'Matching profile updated',
+          message: 'Your investor questionnaire answers were saved — your AI matches will refresh to reflect them.'
+        });
+      }
+    });
+  }
+})();
+</script>
+<script src="notifications.js"></script>
+
+</body>
+</html>

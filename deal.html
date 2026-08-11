@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lagos Foods Co. — Root ASAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="notifications.css">
+<style>
+  :root{
+    --green-50:#EAF4EE; --green-100:#CBE6D6; --green-200:#A0D2B8; --green-300:#6FB894;
+    --green-400:#429973; --green-500:#1F6F4A; --green-600:#175A3B; --green-700:#12472F;
+    --green-800:#0F3D28; --green-900:#0A2A1B;
+    --gold-50:#FBF3E3; --gold-100:#F3DFB0; --gold-200:#E9C67D; --gold-300:#DCAA52;
+    --gold-400:#C8963A; --gold-500:#B8862B; --gold-600:#96701F; --gold-700:#6B4E12;
+    --gray-0:#FFFFFF; --gray-50:#FAFAF8; --gray-100:#F2F1ED; --gray-200:#E4E2DB;
+    --gray-300:#CFCDC3; --gray-400:#A9A69A; --gray-500:#83807A; --gray-600:#605D52;
+    --gray-700:#45433B; --gray-800:#2E2C27; --gray-900:#1A1917;
+    --success:#1F6F4A; --success-bg:#EAF4EE; --success-text:#12472F;
+    --warning:#B8862B; --warning-bg:#FBF3E3; --warning-text:#6B4E12;
+    --danger:#B03A2E; --danger-bg:#FDECEA; --danger-text:#7A281E;
+    --info:#2B6CB8; --info-bg:#E7F0FA; --info-text:#1D4E85;
+    --font-display:'Fraunces', Georgia, serif;
+    --font-body:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius-sm:8px; --radius-md:14px; --radius-lg:20px; --radius-pill:999px;
+    --shadow-card:0 1px 2px rgba(15,61,40,0.05), 0 4px 14px rgba(15,61,40,0.06);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--gray-100); color:var(--gray-900); font-family:var(--font-body); font-size:14px; line-height:1.6;}
+  a{color:inherit; text-decoration:none;}
+  .container{max-width:1180px; margin:0 auto; padding:0 28px;}
+  .btn{font-family:var(--font-body); font-weight:600; border-radius:var(--radius-pill); border:none; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px;}
+  .btn-primary{background:var(--green-600); color:#fff; width:100%; padding:14px; font-size:15px;}
+  .btn-primary:hover{background:var(--green-500);}
+  .btn-secondary{background:#fff; color:var(--green-700); border:1.5px solid var(--green-600); width:100%; padding:12px; font-size:14px;}
+  .btn-ghost{background:transparent; color:var(--gray-600); border:1.5px solid var(--gray-300); padding:10px 16px; font-size:13px;}
+
+  /* NAV (shared) */
+  nav.mainnav{background:var(--green-900); padding:14px 0;}
+  nav.mainnav .container{display:flex; align-items:center; gap:24px;}
+  .logo{font-family:var(--font-display); font-weight:600; font-size:19px; color:#fff; display:flex; align-items:center; gap:8px; flex-shrink:0;}
+  .logo svg{width:20px; height:20px;}
+  .search-bar{flex:1; display:flex; align-items:center; background:#fff; border-radius:var(--radius-pill); padding:4px 4px 4px 18px; max-width:640px;}
+  .search-bar input{border:none; outline:none; flex:1; font-family:var(--font-body); font-size:14px; padding:9px 0; color:var(--gray-800);}
+  .search-bar input::placeholder{color:var(--gray-400);}
+  .search-bar button{background:var(--gold-500); border:none; border-radius:var(--radius-pill); width:38px; height:38px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#2E2107;}
+  .search-bar button svg{width:17px; height:17px;}
+  .nav-links{display:flex; gap:26px; font-size:13.5px; font-weight:500; color:rgba(255,255,255,0.75); flex-shrink:0;}
+  .nav-links a:hover{color:#fff;}
+  .nav-icons{display:flex; align-items:center; gap:20px; flex-shrink:0;}
+  .nav-icon{display:flex; flex-direction:column; align-items:center; gap:2px; color:rgba(255,255,255,0.85); font-size:11px; font-weight:600;}
+  .nav-icon svg{width:19px; height:19px;}
+  .signup-btn{background:#F4F1E9; color:var(--green-900); font-weight:600; font-size:13px; padding:9px 18px; border-radius:var(--radius-pill); white-space:nowrap;}
+  .user-chip-wrap{display:none; align-items:center; gap:12px;}
+  .user-chip{display:flex; align-items:center; gap:8px; color:#fff; font-size:13px; font-weight:600;}
+  .user-avatar{width:28px; height:28px; border-radius:50%; background:var(--gold-400); color:#2E2107; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0;}
+  .logout-link{font-size:12px; color:rgba(255,255,255,0.6); font-weight:600;}
+  .logout-link:hover{color:#fff;}
+
+  /* BREADCRUMB */
+  .breadcrumb{padding:20px 0 0; font-size:12.5px; color:var(--gray-500); display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .breadcrumb a:hover{color:var(--green-700);}
+  .breadcrumb .sep{color:var(--gray-300);}
+  .breadcrumb .current{color:var(--gray-800); font-weight:600;}
+
+  /* DEAL HERO */
+  .deal-hero{padding:18px 0 0; display:grid; grid-template-columns:1fr; gap:0;}
+  .deal-banner{height:220px; border-radius:var(--radius-lg); background:linear-gradient(135deg, var(--green-700), var(--green-400)); position:relative; overflow:hidden; display:flex; align-items:flex-end; padding:26px 30px;}
+  .deal-banner::after{content:""; position:absolute; inset:0; background:radial-gradient(ellipse 400px 240px at 85% 10%, rgba(233,198,125,0.22), transparent 60%);}
+  .deal-banner .badge-corner{position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.92); color:var(--green-800); font-size:12px; font-weight:700; padding:6px 14px; border-radius:999px; z-index:1;}
+  .deal-banner-title{position:relative; z-index:1; color:#fff;}
+  .deal-banner-title .kicker{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--gold-200); margin-bottom:6px;}
+  .deal-banner-title h1{font-family:var(--font-display); font-size:34px; font-weight:600;}
+  .deal-banner-title .loc{font-size:13.5px; color:rgba(255,255,255,0.75); margin-top:6px;}
+
+  .deal-tags{display:flex; gap:8px; margin:18px 0; flex-wrap:wrap;}
+  .badge{font-size:11.5px; font-weight:700; padding:5px 12px; border-radius:999px;}
+  .badge-neutral{background:var(--gray-100); color:var(--gray-700);}
+  .badge-success{background:var(--success-bg); color:var(--success-text);}
+  .badge-warning{background:var(--warning-bg); color:var(--warning-text);}
+  .badge-info{background:var(--info-bg); color:var(--info-text);}
+
+  /* LAYOUT */
+  .deal-layout{display:grid; grid-template-columns:1fr 360px; gap:32px; padding:8px 0 60px; align-items:start;}
+
+  /* STICKY SUBNAV */
+  .subnav{position:sticky; top:0; z-index:5; background:var(--gray-100); display:flex; gap:26px; padding:14px 0; border-bottom:1px solid var(--gray-200); margin-bottom:28px; font-size:13.5px; font-weight:600;}
+  .subnav a{color:var(--gray-500);}
+  .subnav a:hover, .subnav a.active{color:var(--green-700);}
+
+  .panel{background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); padding:28px 30px; margin-bottom:24px; box-shadow:var(--shadow-card);}
+  .panel h2{font-family:var(--font-display); font-size:21px; font-weight:600; color:var(--green-900); margin-bottom:14px;}
+  .panel p{color:var(--gray-600); font-size:14px; margin-bottom:12px;}
+  .panel p:last-child{margin-bottom:0;}
+
+  .kv-grid{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--gray-200); border-radius:var(--radius-md); overflow:hidden;}
+  .kv-row{display:contents;}
+  .kv-key, .kv-val{padding:13px 16px; font-size:13px; border-bottom:1px solid var(--gray-100);}
+  .kv-key{background:var(--gray-50); color:var(--gray-600); font-weight:600;}
+  .kv-val{color:var(--gray-900); font-weight:500;}
+  .kv-grid > div:nth-last-child(-n+2){border-bottom:none;}
+
+  .calc-note{background:var(--green-50); border-left:3px solid var(--green-500); border-radius:0 10px 10px 0; padding:14px 18px; font-size:12.5px; color:var(--green-800); margin-top:16px; line-height:1.6;}
+
+  table.rs{width:100%; border-collapse:collapse; font-size:13px;}
+  table.rs th{text-align:left; color:var(--gray-500); font-weight:600; padding:10px 4px; border-bottom:1.5px solid var(--gray-200); font-size:11px; text-transform:uppercase; letter-spacing:0.5px;}
+  table.rs td{padding:12px 4px; border-bottom:1px solid var(--gray-100);}
+  table.rs tr:last-child td{border-bottom:none;}
+
+  .doc-list{display:flex; flex-direction:column; gap:10px;}
+  .doc-item{display:flex; align-items:center; gap:14px; padding:14px 16px; border:1px solid var(--gray-200); border-radius:var(--radius-sm);}
+  .doc-item .icon{width:36px; height:36px; border-radius:8px; background:var(--green-50); color:var(--green-700); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .doc-item .icon svg{width:17px; height:17px;}
+  .doc-item .info{flex:1;}
+  .doc-item .name{font-weight:600; font-size:13.5px; color:var(--gray-900);}
+  .doc-item .size{font-size:11.5px; color:var(--gray-500); margin-top:2px;}
+  .doc-item .dl{color:var(--green-700); font-size:12.5px; font-weight:700; display:flex; align-items:center; gap:5px;}
+  .doc-item .dl svg{width:14px; height:14px;}
+
+  .update-item{padding:16px 0; border-bottom:1px solid var(--gray-100);}
+  .update-item:last-child{border-bottom:none; padding-bottom:0;}
+  .update-item .date{font-size:11.5px; color:var(--gray-500); font-weight:600; margin-bottom:6px;}
+  .update-item h4{font-size:14.5px; font-weight:600; margin-bottom:5px; color:var(--gray-900);}
+  .update-item p{font-size:13px; color:var(--gray-600);}
+
+  .qa-item{padding:18px 0; border-bottom:1px solid var(--gray-100);}
+  .qa-item:last-child{border-bottom:none;}
+  .qa-q{display:flex; gap:12px;}
+  .avatar{width:34px; height:34px; border-radius:50%; background:var(--green-100); color:var(--green-700); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0;}
+  .avatar.owner{background:var(--gold-100); color:var(--gold-800);}
+  .qa-body{flex:1;}
+  .qa-name{font-weight:600; font-size:13px; color:var(--gray-900);}
+  .qa-name .role{font-weight:500; color:var(--gray-500); font-size:11.5px; margin-left:6px;}
+  .qa-text{font-size:13.5px; color:var(--gray-700); margin-top:4px;}
+  .qa-reply{display:flex; gap:12px; margin-top:14px; margin-left:0; padding-left:46px;}
+  .ask-box{display:flex; gap:10px; margin-top:20px;}
+  .ask-box input{flex:1; padding:11px 14px; border:1.5px solid var(--gray-300); border-radius:var(--radius-sm); font-family:var(--font-body); font-size:13.5px;}
+  .ask-box input:focus{outline:none; border-color:var(--green-500);}
+  .ask-box button{background:var(--green-700); color:#fff; border:none; border-radius:var(--radius-sm); padding:0 20px; font-weight:600; font-size:13.5px; cursor:pointer;}
+
+  .risk-box{background:var(--warning-bg); border-radius:var(--radius-md); padding:20px 22px; display:flex; gap:14px; align-items:flex-start;}
+  .risk-box .icon{width:32px; height:32px; border-radius:8px; background:rgba(184,134,43,0.18); color:var(--warning-text); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .risk-box .icon svg{width:16px; height:16px;}
+  .risk-box h4{color:var(--warning-text); font-size:14px; margin-bottom:6px;}
+  .risk-box p{color:var(--warning-text); font-size:12.5px; opacity:0.9; margin:0;}
+
+  /* SIDEBAR INVEST CARD */
+  .invest-card{position:sticky; top:24px; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); padding:26px; box-shadow:var(--shadow-card);}
+  .match-badge{display:flex; align-items:center; gap:7px; background:var(--green-50); color:var(--green-700); font-size:12px; font-weight:700; padding:8px 14px; border-radius:999px; margin-bottom:18px;}
+  .match-badge svg{width:14px; height:14px; flex-shrink:0;}
+  .invest-howitworks{font-size:11.5px; color:var(--gray-500); line-height:1.5; margin-top:10px;}
+  .invest-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;}
+  .invest-raised{font-family:var(--font-display); font-size:26px; font-weight:600; color:var(--green-800);}
+  .invest-pct{font-size:14px; font-weight:700; color:var(--green-700);}
+  .invest-target{font-size:12px; color:var(--gray-500); margin-bottom:14px;}
+  .progress{background:var(--gray-200); border-radius:99px; height:8px; overflow:hidden;}
+  .progress-fill{height:100%; background:var(--green-500); border-radius:99px;}
+  .invest-meta-row{display:flex; justify-content:space-between; margin-top:16px; padding-top:16px; border-top:1px solid var(--gray-100); font-size:12px; color:var(--gray-500);}
+  .invest-meta-row b{display:block; font-size:15px; color:var(--gray-900); font-weight:600; margin-top:2px;}
+
+  .amount-field{margin-top:20px;}
+  .amount-field label{font-size:12.5px; font-weight:600; color:var(--gray-700); display:block; margin-bottom:8px;}
+  .amount-input-wrap{display:flex; align-items:center; border:1.5px solid var(--gray-300); border-radius:var(--radius-sm); padding:0 4px 0 14px;}
+  .amount-input-wrap span{color:var(--gray-500); font-weight:600;}
+  .amount-input-wrap input{border:none; outline:none; flex:1; padding:12px 8px; font-size:16px; font-weight:600; font-family:var(--font-body); color:var(--gray-900);}
+  .quick-amounts{display:flex; gap:8px; margin-top:10px;}
+  .quick-amounts span{flex:1; text-align:center; padding:8px 0; border:1.4px solid var(--gray-300); border-radius:var(--radius-sm); font-size:12.5px; font-weight:600; color:var(--gray-700); cursor:pointer;}
+  .quick-amounts span.active{background:var(--green-700); border-color:var(--green-700); color:#fff;}
+  .min-note{font-size:11.5px; color:var(--gray-500); margin-top:8px;}
+
+  .invest-actions{margin-top:20px; display:flex; flex-direction:column; gap:10px;}
+  .invest-trust{margin-top:20px; padding-top:18px; border-top:1px solid var(--gray-100); display:flex; flex-direction:column; gap:10px;}
+  .trust-row{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--gray-600);}
+  .trust-row svg{width:15px; height:15px; color:var(--green-600); flex-shrink:0;}
+
+  /* SIMILAR DEALS */
+  section.similar{padding:20px 0 80px;}
+  .section-head{max-width:600px; margin-bottom:28px;}
+  .section-head h2{font-family:var(--font-display); font-size:24px; font-weight:600; color:var(--green-900);}
+  .deal-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .deal-card{display:block; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-card); transition:transform .15s ease;}
+  .deal-card:hover{transform:translateY(-2px);}
+  .deal-card .thumb{height:100px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:var(--font-display); font-size:13px; text-align:center; padding:0 14px;}
+  .deal-card .body{padding:16px;}
+  .deal-card h4{font-family:var(--font-display); font-size:15.5px; margin-bottom:2px;}
+  .deal-card .meta{font-size:11px; color:var(--gray-500); margin-bottom:11px;}
+  .stats-row{display:flex; justify-content:space-between; margin-top:11px; font-size:10.5px; color:var(--gray-500);}
+  .stats-row b{display:block; font-size:13px; color:var(--gray-900); font-weight:600;}
+
+  /* PITCH CAROUSEL */
+  .pitch-carousel{margin-bottom:26px;}
+  .pitch-eyebrow{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-600); margin-bottom:10px;}
+  .pitch-viewer{position:relative; border-radius:14px; overflow:hidden; aspect-ratio:16/9; background:var(--gray-900);}
+  .pitch-slide{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition:opacity .3s ease; color:#fff; text-align:center; padding:24px; font-family:var(--font-display); font-size:15px;}
+  .pitch-slide.active{opacity:1; visibility:visible; z-index:1;}
+  .pitch-slide .slide-caption{position:absolute; left:16px; bottom:16px; background:rgba(0,0,0,0.5); padding:7px 13px; border-radius:8px; font-size:12.5px; font-weight:600; font-family:var(--font-body); text-align:left;}
+  .pitch-slide .play-badge{width:58px; height:58px; border-radius:50%; background:rgba(255,255,255,0.92); display:flex; align-items:center; justify-content:center; cursor:pointer;}
+  .pitch-slide .play-badge svg{width:20px; height:20px; color:var(--green-800); margin-left:3px;}
+  .pitch-slide .duration-badge{position:absolute; top:14px; right:14px; background:rgba(0,0,0,0.55); color:#fff; font-size:11px; font-weight:700; padding:4px 9px; border-radius:6px; font-family:var(--font-body);}
+  .pitch-nav{position:absolute; top:50%; transform:translateY(-50%); width:38px; height:38px; border-radius:50%; background:rgba(0,0,0,0.4); color:#fff; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:2;}
+  .pitch-nav:hover{background:rgba(0,0,0,0.6);}
+  .pitch-nav.prev{left:14px;}
+  .pitch-nav.next{right:14px;}
+  .pitch-nav svg{width:18px; height:18px;}
+  .pitch-dots{position:absolute; bottom:14px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:2;}
+  .pitch-dots .dot{width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.5); cursor:pointer; transition:all .2s ease;}
+  .pitch-dots .dot.active{background:#fff; width:18px; border-radius:4px;}
+  .pitch-thumbs{display:flex; gap:8px; margin-top:10px; overflow-x:auto;}
+  .pitch-thumb{width:82px; height:54px; border-radius:8px; flex-shrink:0; cursor:pointer; border:2px solid transparent; overflow:hidden; position:relative; display:flex; align-items:center; justify-content:center; color:#fff;}
+  .pitch-thumb.active{border-color:var(--green-600);}
+  .pitch-thumb .mini-play{position:absolute; width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,0.92); display:flex; align-items:center; justify-content:center;}
+  .pitch-thumb .mini-play svg{width:7px; height:7px; color:var(--green-800);}
+  .pitch-upload-hint{font-size:11.5px; color:var(--gray-500); margin-top:10px; display:flex; align-items:center; gap:6px;}
+  .pitch-upload-hint svg{width:13px; height:13px; flex-shrink:0;}
+
+  /* SOCIAL PROOF */
+  section.social-proof{padding:20px 0 70px;}
+  .social-follow-row{display:flex; gap:12px; margin-bottom:32px; flex-wrap:wrap;}
+  .social-follow{display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-pill); padding:9px 18px 9px 9px; font-size:13px; font-weight:600; color:var(--gray-800);}
+  .social-follow .platform-icon{width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;}
+  .social-follow .platform-icon svg{width:15px; height:15px;}
+  .ig-icon{background:linear-gradient(135deg,#f9ce34,#ee2a7b,#6228d7);}
+  .fb-icon{background:#1877F2;}
+  .li-icon{background:#0A66C2;}
+  .social-follow .handle{color:var(--gray-500); font-weight:500;}
+
+  .social-masonry{columns:3; column-gap:18px;}
+  .social-card{break-inside:avoid; margin-bottom:18px; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-md); overflow:hidden; box-shadow:var(--shadow-card); display:block; width:100%;}
+  .social-card-head{display:flex; align-items:center; gap:10px; padding:13px 14px 10px;}
+  .social-card-head .platform-icon{width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;}
+  .social-card-head .platform-icon svg{width:13px; height:13px;}
+  .social-card-head .who{flex:1; min-width:0;}
+  .social-card-head .name{font-size:12.5px; font-weight:700; color:var(--gray-900); display:flex; align-items:center; gap:4px;}
+  .social-card-head .name svg.verified{width:12px; height:12px; color:var(--info);}
+  .social-card-head .time{font-size:11px; color:var(--gray-500);}
+  .social-card .media{width:100%; display:flex; align-items:center; justify-content:center; color:#fff; font-family:var(--font-display); font-size:13px; text-align:center; padding:24px 18px; position:relative;}
+  .social-card .media.play::after{content:""; position:absolute; width:0; height:0; border-style:solid; border-width:9px 0 9px 15px; border-color:transparent transparent transparent #fff; left:50%; top:50%; transform:translate(-50%,-50%);}
+  .social-card .caption{padding:12px 14px 6px; font-size:12.5px; color:var(--gray-700); line-height:1.5;}
+  .social-card .stats-line{display:flex; gap:16px; padding:8px 14px 14px; font-size:11.5px; color:var(--gray-500);}
+  .social-card .stats-line span{display:flex; align-items:center; gap:4px;}
+  .social-card .stats-line svg{width:13px; height:13px;}
+  .social-card .revenue-chip{margin:0 14px 12px; background:var(--green-50); border-radius:8px; padding:10px 12px;}
+  .social-card .revenue-chip .lbl{font-size:10px; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.4px;}
+  .social-card .revenue-chip .amt{font-family:var(--font-display); font-size:16px; font-weight:700; color:var(--green-800); margin-top:2px;}
+
+  footer{background:var(--green-900); padding:40px 0; margin-top:0;}
+  footer .container{display:flex; justify-content:space-between; align-items:center; color:rgba(255,255,255,0.5); font-size:12px;}
+  footer .flogo{font-family:var(--font-display); color:#fff; font-weight:600; font-size:15px;}
+
+  @media (max-width:900px){
+    .deal-layout{grid-template-columns:1fr;}
+    .invest-card{position:static;}
+    .kv-grid{grid-template-columns:1fr;}
+    .deal-grid{grid-template-columns:1fr;}
+    .subnav{overflow-x:auto;}
+    .nav-links{display:none;}
+    .social-masonry{columns:2;}
+  }
+  @media (max-width:560px){
+    .social-masonry{columns:1;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="mainnav">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="19" stroke="#E9C67D" stroke-width="1.2"/>
+        <path d="M20 11 L20 22" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 14 L15 9" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 14 L25 9" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 22 C 20 22, 13 24, 11 30" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M20 22 C 20 22, 20 26, 20 31" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M20 22 C 20 22, 27 24, 29 30" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+      Root ASAP
+    </a>
+    <div class="search-bar">
+      <input type="text" placeholder="Search deals — e.g. real estate, Ghana, trade..." />
+      <button aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html#browse">Marketplace</a>
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#business">For business owners</a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menu" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg></button>
+    <div class="nav-icons">
+      <a class="nav-icon" href="dashboard.html" id="dashboardNavLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5" stroke-linecap="round"/></svg>Dashboard</a>
+      <div class="notif-bell-wrap" id="notifBellWrap"></div>
+      <a class="signup-btn" href="auth.html" id="signupBtn">Sign up</a>
+      <div class="user-chip-wrap" id="userChipWrap">
+        <a class="user-chip" id="userChipLink" href="dashboard.html"><span class="user-avatar" id="userAvatarInitials">--</span><span id="userChipName">Name</span></a>
+        <a class="logout-link" id="logoutLink" href="#">Log out</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="index.html">Home</a><span class="sep">/</span>
+    <a href="index.html#browse">Marketplace</a><span class="sep">/</span>
+    <a href="index.html#browse">Trade &amp; import</a><span class="sep">/</span>
+    <span class="current">Lagos Foods Co.</span>
+  </div>
+
+  <div class="deal-hero">
+    <div class="deal-banner">
+      <span class="badge-corner">72% committed</span>
+      <div class="deal-banner-title">
+        <div class="kicker">Trade &amp; import</div>
+        <h1>Lagos Foods Co.</h1>
+        <div class="loc">Lagos, Nigeria · Sourcing and importing West African staple foods to UK wholesalers</div>
+      </div>
+    </div>
+    <div class="deal-tags">
+      <span class="badge badge-success">Low risk</span>
+      <span class="badge badge-neutral">18-month term</span>
+      <span class="badge badge-neutral">Fixed interest</span>
+      <span class="badge badge-info">Open — expressing interest</span>
+    </div>
+  </div>
+
+  <div class="deal-layout">
+    <div class="deal-main">
+
+      <div class="subnav">
+        <a href="#overview" class="active">Overview</a>
+        <a href="#terms">Terms</a>
+        <a href="#schedule">Repayment schedule</a>
+        <a href="#documents">Documents</a>
+        <a href="#updates">Updates</a>
+        <a href="#qa">Q&amp;A</a>
+        <a href="#risk">Risk</a>
+        <a href="#social">Social</a>
+      </div>
+
+      <div class="panel" id="overview">
+
+        <div class="pitch-carousel">
+          <div class="pitch-eyebrow">Pitch from the business owner</div>
+          <div class="pitch-viewer">
+
+            <div class="pitch-slide active" style="background:linear-gradient(135deg, var(--green-700), var(--green-400));">
+              <span class="play-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="duration-badge">2:14</span>
+              <span class="slide-caption">Meet Tunde — a 2-minute introduction to the business</span>
+            </div>
+
+            <div class="pitch-slide" style="background:linear-gradient(135deg, var(--gold-600), var(--gold-300));">
+              <span class="slide-caption">Sourcing rice direct from farmers in Ogun State</span>
+            </div>
+
+            <div class="pitch-slide" style="background:linear-gradient(135deg, #2b2a26, #4a4740);">
+              <span class="slide-caption">Inside the Lagos warehouse and packing floor</span>
+            </div>
+
+            <div class="pitch-slide" style="background:linear-gradient(135deg, var(--green-800), var(--gold-500));">
+              <span class="play-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="duration-badge">1:48</span>
+              <span class="slide-caption">Why we're raising this round</span>
+            </div>
+
+            <div class="pitch-slide" style="background:linear-gradient(135deg, #3B6D11, #97C459);">
+              <span class="slide-caption">The team behind Lagos Foods Co.</span>
+            </div>
+
+            <button class="pitch-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="pitch-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+
+            <div class="pitch-dots">
+              <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </div>
+
+          <div class="pitch-thumbs">
+            <div class="pitch-thumb active" style="background:linear-gradient(135deg, var(--green-700), var(--green-400));"><span class="mini-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+            <div class="pitch-thumb" style="background:linear-gradient(135deg, var(--gold-600), var(--gold-300));"></div>
+            <div class="pitch-thumb" style="background:linear-gradient(135deg, #2b2a26, #4a4740);"></div>
+            <div class="pitch-thumb" style="background:linear-gradient(135deg, var(--green-800), var(--gold-500));"><span class="mini-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+            <div class="pitch-thumb" style="background:linear-gradient(135deg, #3B6D11, #97C459);"></div>
+          </div>
+
+          <div class="pitch-upload-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" stroke-linejoin="round"/></svg>
+            Uploaded by Tunde Adeyemi, business owner
+          </div>
+        </div>
+
+        <h2>About this deal</h2>
+        <p>Lagos Foods Co. imports rice, beans, palm oil and dried fish from verified Nigerian suppliers and distributes to independent African and Caribbean grocers across London and Birmingham. Founded in 2019 by Tunde Adeyemi, the business has grown from a single delivery route to supplying over 60 retailers.</p>
+        <p>This raise funds a bulk container order timed to lock in pre-harvest pricing, cutting unit costs by an estimated 14% versus spot-buying through the year. Funds are drawn down once the deal closes and repaid from wholesale receivables over the following 18 months.</p>
+        <div class="kv-grid" style="margin-top:18px;">
+          <div class="kv-key">Founded</div><div class="kv-val">2019</div>
+          <div class="kv-key">Business owner</div><div class="kv-val">Tunde Adeyemi</div>
+          <div class="kv-key">Based in</div><div class="kv-val">London, UK</div>
+          <div class="kv-key">Operating in</div><div class="kv-val">Lagos, Nigeria</div>
+          <div class="kv-key">Use of funds</div><div class="kv-val">Bulk container order, pre-harvest pricing</div>
+          <div class="kv-key">Track record</div><div class="kv-val">2 prior deals, both repaid on time</div>
+        </div>
+      </div>
+
+      <div class="panel" id="terms">
+        <h2>Terms</h2>
+        <div class="kv-grid">
+          <div class="kv-key">Amount seeking</div><div class="kv-val">£60,000</div>
+          <div class="kv-key">Minimum ticket</div><div class="kv-val">£250</div>
+          <div class="kv-key">Term length</div><div class="kv-val">18 months</div>
+          <div class="kv-key">Return structure</div><div class="kv-val">Fixed interest</div>
+          <div class="kv-key">Target return</div><div class="kv-val">11% total over term</div>
+          <div class="kv-key">Repayment frequency</div><div class="kv-val">Quarterly (proposed)</div>
+          <div class="kv-key">Root ASAP platform fee</div><div class="kv-val">None — Root ASAP is never party to the transaction</div>
+          <div class="kv-key">Interest deadline</div><div class="kv-val">28 September 2026</div>
+        </div>
+        <div class="calc-note">
+          <b>How this indicative return is calculated:</b> principal × 11% ÷ 6 quarterly instalments, paid alongside a portion of principal each quarter. Example: a £1,000 investment would be projected to return approximately £1,110 in total across six quarterly payments — this is Tunde's proposed structure, agreed directly with each investor, not a Root ASAP-administered schedule.
+        </div>
+      </div>
+
+      <div class="panel" id="schedule">
+        <h2>Proposed repayment schedule</h2>
+        <p style="margin-top:-6px;">This is Tunde's stated plan for repaying investors directly. Root ASAP does not track, hold, or enforce these payments — treat it as a starting point for what you agree together.</p>
+        <table class="rs">
+          <tr><th>Instalment</th><th>Proposed date</th><th>Principal</th><th>Interest</th><th>Status</th></tr>
+          <tr><td>1 of 6</td><td>28 Dec 2026</td><td>£8,571</td><td>£1,100</td><td><span class="badge badge-neutral">Proposed</span></td></tr>
+          <tr><td>2 of 6</td><td>28 Mar 2027</td><td>£8,571</td><td>£1,100</td><td><span class="badge badge-neutral">Proposed</span></td></tr>
+          <tr><td>3 of 6</td><td>28 Jun 2027</td><td>£8,571</td><td>£1,100</td><td><span class="badge badge-neutral">Proposed</span></td></tr>
+          <tr><td>4 of 6</td><td>28 Sep 2027</td><td>£8,571</td><td>£1,100</td><td><span class="badge badge-neutral">Proposed</span></td></tr>
+          <tr><td>5 of 6</td><td>28 Dec 2027</td><td>£8,571</td><td>£1,100</td><td><span class="badge badge-neutral">Proposed</span></td></tr>
+          <tr><td>6 of 6</td><td>28 Mar 2028</td><td>£8,575</td><td>£1,100</td><td><span class="badge badge-neutral">Proposed</span></td></tr>
+        </table>
+      </div>
+
+      <div class="panel" id="documents">
+        <h2>Documents</h2>
+        <div class="doc-list">
+          <div class="doc-item">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5" stroke-linejoin="round"/></svg></div>
+            <div class="info"><div class="name">Business plan.pdf</div><div class="size">2.4 MB · Uploaded 3 Aug 2026</div></div>
+            <span class="dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>Download</span>
+          </div>
+          <div class="doc-item">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5" stroke-linejoin="round"/></svg></div>
+            <div class="info"><div class="name">Financial projections.xlsx</div><div class="size">640 KB · Uploaded 3 Aug 2026</div></div>
+            <span class="dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>Download</span>
+          </div>
+          <div class="doc-item">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5" stroke-linejoin="round"/></svg></div>
+            <div class="info"><div class="name">Company registration certificate.pdf</div><div class="size">310 KB · Verified by Root ASAP</div></div>
+            <span class="dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>Download</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="updates">
+        <h2>Updates</h2>
+        <div class="update-item">
+          <div class="date">2 August 2026</div>
+          <h4>Supplier contract signed</h4>
+          <p>We've locked in pricing with our Lagos rice supplier ahead of the September harvest — this raise funds the deposit and first shipment.</p>
+        </div>
+        <div class="update-item">
+          <div class="date">20 July 2026</div>
+          <h4>Deal listed on Root ASAP</h4>
+          <p>Thanks for taking a look. Happy to answer any questions in the Q&amp;A below.</p>
+        </div>
+      </div>
+
+      <div class="panel" id="qa">
+        <h2>Questions &amp; answers</h2>
+
+        <div class="qa-item">
+          <div class="qa-q">
+            <div class="avatar">MK</div>
+            <div class="qa-body">
+              <div class="qa-name">Maria K. <span class="role">Investor</span></div>
+              <div class="qa-text">What happens if the container shipment is delayed past the harvest window?</div>
+            </div>
+          </div>
+          <div class="qa-reply">
+            <div class="avatar owner">TA</div>
+            <div class="qa-body">
+              <div class="qa-name">Tunde Adeyemi <span class="role">Business owner</span></div>
+              <div class="qa-text">We've built a 3-week buffer into the schedule and have a backup supplier on standby. Repayment dates are set from container arrival, not order date, so a short delay wouldn't affect your schedule.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q">
+            <div class="avatar">DO</div>
+            <div class="qa-body">
+              <div class="qa-name">David O. <span class="role">Investor</span></div>
+              <div class="qa-text">Is the 11% return fixed regardless of how well the containers sell?</div>
+            </div>
+          </div>
+          <div class="qa-reply">
+            <div class="avatar owner">TA</div>
+            <div class="qa-body">
+              <div class="qa-name">Tunde Adeyemi <span class="role">Business owner</span></div>
+              <div class="qa-text">Yes — this is a fixed-interest deal, so your return doesn't change with sales performance. It's repaid from wholesale receivables regardless of margin on any single shipment.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ask-box">
+          <input type="text" id="askInput" placeholder="Ask Tunde a question about this deal..." />
+          <button id="askPostBtn" type="button">Post</button>
+        </div>
+      </div>
+
+      <div class="panel" id="risk" style="padding:0; border:none; background:transparent; box-shadow:none;">
+        <div class="risk-box">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.3 3.9L2.5 17a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h4>Capital at risk</h4>
+            <p>This is an unlisted investment in a private business. Returns are not guaranteed, repayment depends on the business's performance, and your capital is not protected by the FSCS. Root ASAP does not hold or transfer funds, does not negotiate or execute this transaction, and does not provide investment advice — Root ASAP vets and lists deals, but the investment itself is agreed and completed directly between you and the business owner. Only invest what you can afford to lose, and read the full risk disclosure before proceeding.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <aside class="invest-card">
+      <div class="match-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z" stroke-linejoin="round"/></svg>94% match to your investor profile</div>
+
+      <div class="invest-top">
+        <div class="invest-raised">£43,200</div>
+        <div class="invest-pct">72%</div>
+      </div>
+      <div class="invest-target">committed of £60,000 target</div>
+      <div class="progress"><div class="progress-fill" style="width:72%;"></div></div>
+
+      <div class="invest-meta-row">
+        <div>Interested<b>84</b></div>
+        <div>Days left<b>19</b></div>
+        <div>Min ticket<b>£250</b></div>
+      </div>
+
+      <div class="amount-field">
+        <label>Indicative amount</label>
+        <div class="amount-input-wrap">
+          <span>£</span>
+          <input type="text" value="500" />
+        </div>
+        <div class="quick-amounts">
+          <span>£250</span>
+          <span class="active">£500</span>
+          <span>£1,000</span>
+          <span>£2,500</span>
+        </div>
+        <div class="min-note">If this deal proceeds on its stated terms, £500 would be projected to return roughly £555 total over 18 months, paid quarterly.</div>
+      </div>
+
+      <div class="invest-actions">
+        <button class="btn btn-primary" id="expressInterestBtn" type="button">Express interest</button>
+        <button class="btn btn-secondary" id="saveDealBtn" type="button">Save deal</button>
+      </div>
+      <p class="invest-howitworks">Expressing interest sends your details to Tunde. You'll agree terms and transfer funds directly together — Root ASAP never holds or moves your money.</p>
+
+      <div class="invest-trust">
+        <div class="trust-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" stroke-linejoin="round"/></svg>Business owner ID &amp; company verified</div>
+        <div class="trust-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18" stroke-linecap="round"/><path d="M7 15l4-4 3 3 5-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Vetted by Root ASAP before listing</div>
+        <div class="trust-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>No platform fee on your investment</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<section class="social-proof" id="social">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Follow along</p>
+      <h2>Lagos Foods Co. on social</h2>
+      <p>Real updates straight from the business — connected from Instagram, Facebook and LinkedIn.</p>
+    </div>
+
+    <div class="social-follow-row">
+      <div class="social-follow"><span class="platform-icon ig-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span>@lagosfoodsco <span class="handle">Instagram</span></div>
+      <div class="social-follow"><span class="platform-icon fb-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.5-3H13.5V8.5c0-.9.3-1.5 1.7-1.5H16.5V4.3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10.5H7.5v3H9.8V21h3.7z"/></svg></span>Lagos Foods Co. <span class="handle">Facebook</span></div>
+      <div class="social-follow"><span class="platform-icon li-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2 2 0 11-.02 4 2 2 0 01.02-4zM3 9h4v12H3zM9.5 9H13v1.7h.05c.5-.9 1.7-1.9 3.5-1.9 3.7 0 4.45 2.5 4.45 5.7V21H17v-5.4c0-1.3 0-3-1.85-3s-2.15 1.4-2.15 2.9V21H9.5z"/></svg></span>Tunde Adeyemi <span class="handle">LinkedIn</span></div>
+    </div>
+
+    <div class="social-masonry">
+
+      <div class="social-card">
+        <div class="social-card-head">
+          <span class="platform-icon ig-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span>
+          <div class="who"><div class="name">lagosfoodsco</div><div class="time">2 days ago</div></div>
+        </div>
+        <div class="media" style="height:150px; background:linear-gradient(135deg, var(--green-600), var(--green-400));">New shipment just landed 🚢</div>
+        <div class="caption">New shipment just landed — 60 retailers restocked this week. Grateful for every one of you. 🌾</div>
+        <div class="stats-line">
+          <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>340</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-4-1L3 20l1.1-4.3a8.4 8.4 0 01-1.1-4.2A8.4 8.4 0 0111.9 3a8.5 8.5 0 019.1 8.5z" stroke-linejoin="round"/></svg>28</span>
+        </div>
+      </div>
+
+      <div class="social-card">
+        <div class="social-card-head">
+          <span class="platform-icon li-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2 2 0 11-.02 4 2 2 0 01.02-4zM3 9h4v12H3zM9.5 9H13v1.7h.05c.5-.9 1.7-1.9 3.5-1.9 3.7 0 4.45 2.5 4.45 5.7V21H17v-5.4c0-1.3 0-3-1.85-3s-2.15 1.4-2.15 2.9V21H9.5z"/></svg></span>
+          <div class="who"><div class="name">Tunde Adeyemi <svg class="verified" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 2.2 3.2-.4 1 3.1 3 1.3-1 3.2 1.7 2.8-2.5 2.1.3 3.2-3.2.3-1.7 2.7-3-1.3-3 1.3-1.7-2.7-3.2-.3.3-3.2-2.5-2.1 1.7-2.8-1-3.2 3-1.3 1-3.1 3.2.4z"/></svg></div><div class="time">Founder, Lagos Foods Co. · 5d</div></div>
+        </div>
+        <div class="caption">Excited to share we've secured pre-harvest pricing for our next container order, cutting unit costs by 14%. Grateful to our Root ASAP investors for making this possible — this is what diaspora capital can do.</div>
+        <div class="stats-line">
+          <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>212</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-4-1L3 20l1.1-4.3a8.4 8.4 0 01-1.1-4.2A8.4 8.4 0 0111.9 3a8.5 8.5 0 019.1 8.5z" stroke-linejoin="round"/></svg>34</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2l4 4-4 4M21 6H9a4 4 0 00-4 4v1M7 22l-4-4 4-4M3 18h12a4 4 0 004-4v-1" stroke-linecap="round" stroke-linejoin="round"/></svg>19</span>
+        </div>
+      </div>
+
+      <div class="social-card">
+        <div class="social-card-head">
+          <span class="platform-icon ig-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span>
+          <div class="who"><div class="name">lagosfoodsco</div><div class="time">Reel · 1 week ago</div></div>
+        </div>
+        <div class="media play" style="height:230px; background:linear-gradient(135deg, #2b2a26, #16150f);">Behind the scenes: sourcing direct from Ogun State farmers</div>
+        <div class="stats-line">
+          <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>1.2k</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-4-1L3 20l1.1-4.3a8.4 8.4 0 01-1.1-4.2A8.4 8.4 0 0111.9 3a8.5 8.5 0 019.1 8.5z" stroke-linejoin="round"/></svg>96</span>
+        </div>
+      </div>
+
+      <div class="social-card">
+        <div class="social-card-head">
+          <span class="platform-icon fb-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.5-3H13.5V8.5c0-.9.3-1.5 1.7-1.5H16.5V4.3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10.5H7.5v3H9.8V21h3.7z"/></svg></span>
+          <div class="who"><div class="name">Lagos Foods Co.</div><div class="time">3 weeks ago</div></div>
+        </div>
+        <div class="caption">Milestone unlocked: we now supply over 60 independent grocers across London and Birmingham. Started with one delivery route in 2019 — thank you for backing Nigerian trade. 🇳🇬</div>
+        <div class="revenue-chip"><div class="lbl">Retailers supplied</div><div class="amt">60+</div></div>
+        <div class="stats-line">
+          <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>488</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-4-1L3 20l1.1-4.3a8.4 8.4 0 01-1.1-4.2A8.4 8.4 0 0111.9 3a8.5 8.5 0 019.1 8.5z" stroke-linejoin="round"/></svg>61</span>
+        </div>
+      </div>
+
+      <div class="social-card">
+        <div class="social-card-head">
+          <span class="platform-icon li-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2 2 0 11-.02 4 2 2 0 01.02-4zM3 9h4v12H3zM9.5 9H13v1.7h.05c.5-.9 1.7-1.9 3.5-1.9 3.7 0 4.45 2.5 4.45 5.7V21H17v-5.4c0-1.3 0-3-1.85-3s-2.15 1.4-2.15 2.9V21H9.5z"/></svg></span>
+          <div class="who"><div class="name">Tunde Adeyemi</div><div class="time">1 month ago</div></div>
+        </div>
+        <div class="media" style="height:120px; background:linear-gradient(135deg, var(--gold-600), var(--gold-300));">Q2 revenue recap</div>
+        <div class="caption">Q2 recap: revenue up 22% quarter-on-quarter as our wholesale routes expanded into Birmingham. Onward.</div>
+        <div class="stats-line">
+          <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>156</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-4-1L3 20l1.1-4.3a8.4 8.4 0 01-1.1-4.2A8.4 8.4 0 0111.9 3a8.5 8.5 0 019.1 8.5z" stroke-linejoin="round"/></svg>12</span>
+        </div>
+      </div>
+
+      <div class="social-card">
+        <div class="social-card-head">
+          <span class="platform-icon ig-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span>
+          <div class="who"><div class="name">lagosfoodsco</div><div class="time">6 weeks ago</div></div>
+        </div>
+        <div class="media" style="height:170px; background:linear-gradient(135deg, #3B6D11, #97C459);">Fully stocked and ready to deliver 📦</div>
+        <div class="caption">Fully stocked and ready to deliver. Rice, beans, palm oil and dried fish — all sourced from verified Nigerian suppliers.</div>
+        <div class="stats-line">
+          <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>301</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-4-1L3 20l1.1-4.3a8.4 8.4 0 01-1.1-4.2A8.4 8.4 0 0111.9 3a8.5 8.5 0 019.1 8.5z" stroke-linejoin="round"/></svg>22</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="similar">
+  <div class="container">
+    <div class="section-head">
+      <h2>Similar deals</h2>
+    </div>
+    <div class="deal-grid">
+      <a class="deal-card" href="deal.html">
+        <div class="thumb" style="background:linear-gradient(135deg, var(--green-700), var(--green-500));">Freetown Spice Traders</div>
+        <div class="body">
+          <h4>Freetown Spice Traders</h4>
+          <div class="meta">Sierra Leone · 6 months · Fixed interest</div>
+          <div class="stats-row"><div>Committed<b>£18,900</b></div><div>Target<b>£20,000</b></div><div>Return<b>9%</b></div></div>
+        </div>
+      </a>
+      <a class="deal-card" href="deal.html">
+        <div class="thumb" style="background:linear-gradient(135deg, #3B6D11, #97C459);">Kampala Coffee Collective</div>
+        <div class="body">
+          <h4>Kampala Coffee Collective</h4>
+          <div class="meta">Uganda · 2 years · Revenue share</div>
+          <div class="stats-row"><div>Committed<b>£16,800</b></div><div>Target<b>£40,000</b></div><div>Return<b>9–13%</b></div></div>
+        </div>
+      </a>
+      <a class="deal-card" href="deal.html">
+        <div class="thumb" style="background:linear-gradient(135deg, var(--gold-600), var(--gold-300));">Dakar Furniture Works</div>
+        <div class="body">
+          <h4>Dakar Furniture Works</h4>
+          <div class="meta">Senegal · 18 months · Fixed interest</div>
+          <div class="stats-row"><div>Committed<b>£24,000</b></div><div>Target<b>£40,000</b></div><div>Return<b>10%</b></div></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <span class="flogo">Root ASAP</span>
+    <span>© 2026 Root ASAP · Capital at risk · <a href="index.html" style="color:rgba(255,255,255,0.7);">Back to home</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var session = null;
+  try { session = JSON.parse(localStorage.getItem('rootasap_session')); } catch(e){}
+  if(session && session.name){
+    var signupBtn = document.getElementById('signupBtn');
+    var chipWrap = document.getElementById('userChipWrap');
+    var chipLink = document.getElementById('userChipLink');
+    var avatarEl = document.getElementById('userAvatarInitials');
+    var nameEl = document.getElementById('userChipName');
+    var logoutLink = document.getElementById('logoutLink');
+    var dashboardNavLink = document.getElementById('dashboardNavLink');
+    var dashboardUrl = session.role === 'business' ? 'business-dashboard.html' : (session.role === 'broker' ? 'broker-dashboard.html' : 'dashboard.html');
+    var displayName = (session.role === 'business' && session.businessName) || (session.role === 'broker' && session.agencyName) || session.name;
+    if(signupBtn) signupBtn.style.display = 'none';
+    if(chipWrap) chipWrap.style.display = 'flex';
+    var initials = displayName.split(' ').map(function(p){ return p[0]; }).join('').slice(0,2).toUpperCase();
+    if(avatarEl) avatarEl.textContent = initials;
+    if(nameEl) nameEl.textContent = displayName.split(' ')[0];
+    if(chipLink) chipLink.setAttribute('href', dashboardUrl);
+    if(dashboardNavLink) dashboardNavLink.setAttribute('href', dashboardUrl);
+    if(logoutLink) logoutLink.addEventListener('click', function(e){
+      e.preventDefault();
+      localStorage.removeItem('rootasap_session');
+      window.location.href = 'index.html';
+    });
+  }
+})();
+
+(function(){
+  var slides = document.querySelectorAll('.pitch-slide');
+  var dots = document.querySelectorAll('.pitch-dots .dot');
+  var thumbs = document.querySelectorAll('.pitch-thumb');
+  var idx = 0;
+  function show(i){
+    idx = (i + slides.length) % slides.length;
+    slides.forEach(function(s,n){ s.classList.toggle('active', n===idx); });
+    dots.forEach(function(d,n){ d.classList.toggle('active', n===idx); });
+    thumbs.forEach(function(t,n){ t.classList.toggle('active', n===idx); });
+  }
+  var prevBtn = document.querySelector('.pitch-nav.prev');
+  var nextBtn = document.querySelector('.pitch-nav.next');
+  if(prevBtn) prevBtn.addEventListener('click', function(){ show(idx-1); });
+  if(nextBtn) nextBtn.addEventListener('click', function(){ show(idx+1); });
+  dots.forEach(function(d,n){ d.addEventListener('click', function(){ show(n); }); });
+  thumbs.forEach(function(t,n){ t.addEventListener('click', function(){ show(n); }); });
+})();
+
+(function(){
+  var dealName = document.querySelector('.deal-hero h1') ? document.querySelector('.deal-hero h1').textContent : (document.querySelector('h1') ? document.querySelector('h1').textContent : 'this deal');
+  var expressBtn = document.getElementById('expressInterestBtn');
+  var saveBtn = document.getElementById('saveDealBtn');
+  var askBtn = document.getElementById('askPostBtn');
+  var askInput = document.getElementById('askInput');
+
+  if(expressBtn){
+    expressBtn.addEventListener('click', function(){
+      if(expressBtn.getAttribute('data-state') === 'sent') return;
+      expressBtn.setAttribute('data-state', 'sent');
+      expressBtn.textContent = 'Interest sent ✓';
+      if(window.RootASAPNotify){
+        window.RootASAPNotify.push({
+          type: 'interest',
+          title: 'Interest sent to ' + dealName,
+          message: 'Your indicative interest was received. The business owner will respond within 3 business days.'
+        });
+      }
+    });
+  }
+  if(saveBtn){
+    saveBtn.addEventListener('click', function(){
+      if(saveBtn.getAttribute('data-state') === 'saved') return;
+      saveBtn.setAttribute('data-state', 'saved');
+      saveBtn.textContent = 'Saved ✓';
+      if(window.RootASAPNotify){
+        window.RootASAPNotify.push({
+          type: 'system',
+          title: 'Deal saved',
+          message: dealName + ' was added to your saved deals.'
+        });
+      }
+    });
+  }
+  if(askBtn && askInput){
+    askBtn.addEventListener('click', function(){
+      var text = askInput.value.trim();
+      if(!text) return;
+      askInput.value = '';
+      if(window.RootASAPNotify){
+        window.RootASAPNotify.push({
+          type: 'message',
+          title: 'Question posted',
+          message: 'Your question on ' + dealName + " was sent — you'll be notified when the business owner replies."
+        });
+      }
+    });
+  }
+})();
+</script>
+<script src="notifications.js"></script>
+</body>
+</html>

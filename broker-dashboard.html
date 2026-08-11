@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Broker dashboard — Root ASAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="notifications.css">
+<style>
+  :root{
+    --green-50:#EAF4EE; --green-100:#CBE6D6; --green-200:#A0D2B8; --green-300:#6FB894;
+    --green-400:#429973; --green-500:#1F6F4A; --green-600:#175A3B; --green-700:#12472F;
+    --green-800:#0F3D28; --green-900:#0A2A1B;
+    --gold-50:#FBF3E3; --gold-100:#F3DFB0; --gold-200:#E9C67D; --gold-300:#DCAA52;
+    --gold-400:#C8963A; --gold-500:#B8862B; --gold-600:#96701F; --gold-700:#6B4E12;
+    --gray-0:#FFFFFF; --gray-50:#FAFAF8; --gray-100:#F2F1ED; --gray-200:#E4E2DB;
+    --gray-300:#CFCDC3; --gray-400:#A9A69A; --gray-500:#83807A; --gray-600:#605D52;
+    --gray-700:#45433B; --gray-800:#2E2C27; --gray-900:#1A1917;
+    --success:#1F6F4A; --success-bg:#EAF4EE; --success-text:#12472F;
+    --warning:#B8862B; --warning-bg:#FBF3E3; --warning-text:#6B4E12;
+    --danger:#B03A2E; --danger-bg:#FDECEA; --danger-text:#7A281E;
+    --info:#2B6CB8; --info-bg:#E7F0FA; --info-text:#1D4E85;
+    --font-display:'Fraunces', Georgia, serif;
+    --font-body:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius-sm:8px; --radius-md:14px; --radius-lg:20px; --radius-pill:999px;
+    --shadow-card:0 1px 2px rgba(15,61,40,0.05), 0 4px 14px rgba(15,61,40,0.06);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--gray-100); color:var(--gray-900); font-family:var(--font-body); font-size:14px; line-height:1.6;}
+  a{color:inherit; text-decoration:none;}
+  .container{max-width:1180px; margin:0 auto; padding:0 28px;}
+  .btn{font-family:var(--font-body); font-weight:600; border-radius:var(--radius-pill); border:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px;}
+  .btn-primary{background:var(--green-600); color:#fff; padding:11px 22px; font-size:13.5px;}
+  .btn-primary:hover{background:var(--green-500);}
+  .btn-outline{background:#fff; color:var(--green-700); border:1.5px solid var(--green-600); padding:9px 18px; font-size:13px;}
+  .btn-outline:hover{background:var(--green-50);}
+  .btn-gold{background:var(--gold-500); color:#2E2107; padding:11px 22px; font-size:13.5px;}
+  .btn-gold:hover{background:var(--gold-400);}
+  .btn-sm{padding:7px 14px; font-size:12.5px;}
+  .btn[disabled]{opacity:0.55; cursor:not-allowed;}
+
+  /* NAV */
+  nav.mainnav{background:var(--green-900); padding:14px 0;}
+  nav.mainnav .container{display:flex; align-items:center; gap:24px;}
+  .logo{font-family:var(--font-display); font-weight:600; font-size:19px; color:#fff; display:flex; align-items:center; gap:8px; flex-shrink:0;}
+  .logo svg{width:20px; height:20px;}
+  .search-bar{flex:1; display:flex; align-items:center; background:#fff; border-radius:var(--radius-pill); padding:4px 4px 4px 18px; max-width:640px;}
+  .search-bar input{border:none; outline:none; flex:1; font-family:var(--font-body); font-size:14px; padding:9px 0; color:var(--gray-800);}
+  .search-bar input::placeholder{color:var(--gray-400);}
+  .search-bar button{background:var(--gold-500); border:none; border-radius:var(--radius-pill); width:38px; height:38px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#2E2107;}
+  .search-bar button svg{width:17px; height:17px;}
+  .nav-links{display:flex; gap:26px; font-size:13.5px; font-weight:500; color:rgba(255,255,255,0.75); flex-shrink:0;}
+  .nav-links a:hover, .nav-links a.active{color:#fff;}
+  .nav-icons{display:flex; align-items:center; gap:20px; flex-shrink:0;}
+  .nav-icon{display:flex; flex-direction:column; align-items:center; gap:2px; color:rgba(255,255,255,0.85); font-size:11px; font-weight:600;}
+  .nav-icon.active{color:var(--gold-300);}
+  .nav-icon svg{width:19px; height:19px;}
+  .signup-btn{background:#F4F1E9; color:var(--green-900); font-weight:600; font-size:13px; padding:9px 18px; border-radius:var(--radius-pill); white-space:nowrap;}
+  .user-chip-wrap{display:none; align-items:center; gap:12px;}
+  .user-chip{display:flex; align-items:center; gap:8px; color:#fff; font-size:13px; font-weight:600;}
+  .user-avatar{width:28px; height:28px; border-radius:50%; background:var(--gold-400); color:#2E2107; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0;}
+  .logout-link{font-size:12px; color:rgba(255,255,255,0.6); font-weight:600;}
+  .logout-link:hover{color:#fff;}
+
+  /* PAGE HEAD */
+  .page-head{padding:36px 0 8px; display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .page-head h1{font-family:var(--font-display); font-size:30px; font-weight:600; color:var(--green-900);}
+  .page-head p{color:var(--gray-600); font-size:14.5px; margin-top:6px;}
+
+  /* PROFILE CARD */
+  .profile-card{background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); padding:22px 26px; margin:22px 0; display:flex; align-items:center; justify-content:space-between; gap:20px; box-shadow:var(--shadow-card); flex-wrap:wrap;}
+  .profile-left{display:flex; align-items:center; gap:16px;}
+  .avatar-lg{width:52px; height:52px; border-radius:14px; background:var(--gold-100); color:var(--gold-700); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:17px; flex-shrink:0;}
+  .profile-label{font-size:11.5px; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;}
+  .chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .chip{font-size:12px; font-weight:600; padding:5px 12px; border-radius:999px; background:var(--green-50); color:var(--green-700);}
+  .verified-chip{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px; background:var(--success-bg); color:var(--success-text);}
+  .verified-chip svg{width:12px; height:12px;}
+
+  /* METRIC CARDS */
+  .metric-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:34px;}
+  .metric-card{background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-md); padding:20px 22px; box-shadow:var(--shadow-card);}
+  .metric-card .label{font-size:12px; color:var(--gray-500); margin-bottom:8px;}
+  .metric-card .value{font-family:var(--font-display); font-size:26px; font-weight:600; color:var(--green-800);}
+  .metric-card .sub{font-size:11.5px; color:var(--gray-500); margin-top:4px;}
+
+  /* SECTION HEAD */
+  .section-row{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:20px; flex-wrap:wrap;}
+  .section-head h2{font-family:var(--font-display); font-size:22px; font-weight:600; color:var(--green-900);}
+  .section-head p{color:var(--gray-600); font-size:13.5px; margin-top:6px; max-width:560px;}
+
+  /* FILTER TABS */
+  .filter-tabs{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;}
+  .tab{font-size:13px; font-weight:600; padding:9px 18px; border-radius:999px; border:1.4px solid var(--gray-300); background:#fff; color:var(--gray-700); cursor:pointer;}
+  .tab.active{background:var(--green-700); border-color:var(--green-700); color:#fff;}
+
+  /* DEALS TABLE */
+  .deal-table-wrap{background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-card); margin-bottom:44px;}
+  table.dash{width:100%; border-collapse:collapse; font-size:13px;}
+  table.dash th{text-align:left; color:var(--gray-500); font-weight:600; padding:14px 18px; border-bottom:1.5px solid var(--gray-200); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; background:var(--gray-50);}
+  table.dash td{padding:16px 18px; border-bottom:1px solid var(--gray-100); vertical-align:middle;}
+  table.dash tr:last-child td{border-bottom:none;}
+  table.dash tr.dash-row:hover{background:var(--gray-50);}
+  .dash-deal-name{font-weight:600; color:var(--gray-900); font-family:var(--font-display); font-size:14.5px;}
+  .dash-deal-name .sub{font-family:var(--font-body); font-weight:500; font-size:11.5px; color:var(--gray-500); margin-top:2px;}
+  .dash-actions{display:flex; gap:8px;}
+  .status-badge{font-size:11px; font-weight:700; padding:5px 12px; border-radius:999px; white-space:nowrap;}
+  .status-live{background:var(--success-bg); color:var(--success-text);}
+  .status-draft{background:var(--gray-100); color:var(--gray-600);}
+  .status-review{background:var(--warning-bg); color:var(--warning-text);}
+  .stage-track{display:flex; align-items:center; gap:4px;}
+  .stage-dot{width:9px; height:9px; border-radius:50%; background:var(--gray-200);}
+  .stage-dot.done{background:var(--green-600);}
+  .stage-dot.current{background:var(--gold-500);}
+  .stage-track-label{font-size:11px; color:var(--gray-500); margin-left:6px;}
+
+  /* FORM PANEL */
+  .form-panel{background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); padding:30px 32px; margin-bottom:48px; display:none;}
+  .form-panel.open{display:block;}
+  .form-panel h3{font-family:var(--font-display); font-size:19px; margin-bottom:4px; color:var(--green-900);}
+  .form-panel .form-sub{color:var(--gray-500); font-size:13px; margin-bottom:22px;}
+  .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .form-grid .full{grid-column:1/-1;}
+  .field{margin-bottom:0;}
+  .field label{display:block; font-size:12.5px; font-weight:600; color:var(--gray-700); margin-bottom:7px;}
+  .field input, .field select, .field textarea{width:100%; border:1.4px solid var(--gray-300); border-radius:var(--radius-sm); padding:10px 12px; font-family:var(--font-body); font-size:13.5px; color:var(--gray-900); background:#fff;}
+  .field input:focus, .field select:focus, .field textarea:focus{outline:none; border-color:var(--green-500);}
+  .field textarea{resize:vertical; min-height:90px;}
+  .field .hint{font-size:11.5px; color:var(--gray-500); margin-top:5px;}
+  .upload-box{border:1.6px dashed var(--gray-300); border-radius:var(--radius-md); padding:24px; text-align:center; color:var(--gray-500); font-size:13px; background:var(--gray-50);}
+  .upload-box svg{width:22px; height:22px; margin-bottom:8px; color:var(--gray-400);}
+  .form-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:26px; padding-top:22px; border-top:1px solid var(--gray-100);}
+
+  .form-tabs{display:flex; gap:2px; border-bottom:1.5px solid var(--gray-200); margin-bottom:26px; overflow-x:auto;}
+  .form-tab{font-size:12.5px; font-weight:600; color:var(--gray-500); padding:10px 15px; cursor:pointer; border-bottom:2.5px solid transparent; margin-bottom:-1.5px; white-space:nowrap;}
+  .form-tab:hover{color:var(--green-700);}
+  .form-tab.active{color:var(--green-700); border-bottom-color:var(--green-600);}
+  .form-section{display:none;}
+  .form-section.active{display:block;}
+  .section-sub{font-size:12px; color:var(--gray-500); margin-bottom:18px;}
+
+  /* DEAL TYPE TOGGLE (in form) */
+  .form-type-toggle{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;}
+  .ftt-option{border:1.6px solid var(--gray-300); border-radius:var(--radius-md); padding:16px 18px; cursor:pointer; display:flex; gap:12px; align-items:flex-start;}
+  .ftt-option.selected{border-color:var(--green-600); background:var(--green-50);}
+  .ftt-option .ftt-icon{width:32px; height:32px; border-radius:9px; background:var(--gray-100); color:var(--gray-600); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .ftt-option .ftt-icon svg{width:16px; height:16px;}
+  .ftt-option.selected .ftt-icon{background:var(--green-600); color:#fff;}
+  .ftt-option .ftt-title{font-weight:700; font-size:13.5px; color:var(--gray-900); margin-bottom:2px;}
+  .ftt-option .ftt-sub{font-size:11.5px; color:var(--gray-500); line-height:1.4;}
+  .type-badge-form{display:inline-block; font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:999px; margin-left:8px; vertical-align:middle;}
+  .type-badge-investment{background:var(--info-bg); color:var(--info-text);}
+  .type-badge-sale{background:var(--gold-100); color:var(--gold-700);}
+
+  .doc-row{display:flex; align-items:center; justify-content:space-between; border:1px solid var(--gray-200); border-radius:var(--radius-md); padding:13px 16px; margin-bottom:10px; gap:14px; flex-wrap:wrap;}
+  .doc-row-left{display:flex; align-items:center; gap:12px;}
+  .doc-icon{width:36px; height:36px; border-radius:9px; background:var(--green-50); color:var(--green-700); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .doc-icon svg{width:17px; height:17px;}
+  .doc-name{font-weight:600; font-size:13px; color:var(--gray-900);}
+  .doc-hint{font-size:11.5px; color:var(--gray-500);}
+  .file-input-btn{position:relative; overflow:hidden; display:inline-flex;}
+  .file-input-btn input[type=file]{position:absolute; inset:0; opacity:0; cursor:pointer; width:100%;}
+
+  /* COMMISSION TAB */
+  .commission-total-row{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px;}
+  .commission-stage-card{border:1.4px solid var(--gray-200); border-radius:var(--radius-md); padding:18px; margin-bottom:14px; background:var(--gray-50);}
+  .commission-stage-card .cs-top{display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:8px;}
+  .commission-stage-card .cs-name{font-weight:700; font-size:13.5px; color:var(--gray-900); display:flex; align-items:center; gap:8px;}
+  .cs-num{width:22px; height:22px; border-radius:50%; background:var(--green-600); color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .commission-stage-card .cs-desc{font-size:12px; color:var(--gray-500); margin-bottom:10px;}
+  .cs-pct-input{display:flex; align-items:center; gap:8px;}
+  .cs-pct-input input{width:80px; text-align:right;}
+  .cs-pct-input span{font-size:13px; font-weight:700; color:var(--gray-600);}
+  .commission-total-check{display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-radius:var(--radius-md); background:var(--green-50); color:var(--green-800); font-weight:700; font-size:13.5px;}
+  .commission-total-check.invalid{background:var(--danger-bg); color:var(--danger-text);}
+
+  /* AI MATCHING */
+  .match-panel{background:linear-gradient(135deg, var(--green-900), var(--green-700)); border-radius:var(--radius-lg); padding:30px 32px; margin-bottom:22px; color:#fff;}
+  .match-panel-top{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap;}
+  .match-panel h2{font-family:var(--font-display); font-size:22px; font-weight:600;}
+  .match-panel p{color:rgba(255,255,255,0.75); font-size:13.5px; margin-top:6px; max-width:520px;}
+  .match-controls{display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; align-items:center;}
+  .match-controls select{border-radius:var(--radius-pill); border:none; padding:10px 16px; font-size:13px; font-family:var(--font-body); font-weight:600; color:var(--green-800);}
+  .hub-chip{font-size:12.5px; font-weight:600; padding:7px 15px; border-radius:999px; background:rgba(255,255,255,0.12); border:1.4px solid rgba(255,255,255,0.3); color:#fff; cursor:pointer;}
+  .hub-chip.active{background:var(--gold-400); border-color:var(--gold-400); color:#2E2107;}
+  .match-run-row{display:flex; align-items:center; gap:14px; margin-top:22px; flex-wrap:wrap;}
+  .match-spinner{display:none; align-items:center; gap:8px; font-size:12.5px; color:rgba(255,255,255,0.8);}
+  .match-spinner.show{display:flex;}
+  .spin{width:14px; height:14px; border:2px solid rgba(255,255,255,0.35); border-top-color:#fff; border-radius:50%; animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .investor-results{display:none; margin-bottom:48px;}
+  .investor-results.show{display:block;}
+  .results-meta{font-size:12.5px; color:var(--gray-500); margin-bottom:16px;}
+  .investor-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .investor-card{background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); padding:20px 20px 18px; box-shadow:var(--shadow-card);}
+  .investor-card-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;}
+  .investor-avatar{width:42px; height:42px; border-radius:50%; background:var(--gold-100); color:var(--gold-700); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;}
+  .match-score{display:inline-flex; align-items:center; gap:5px; font-weight:700; font-size:13px; color:var(--green-700); background:var(--green-50); padding:5px 11px; border-radius:999px;}
+  .match-score svg{width:12px; height:12px;}
+  .investor-card h4{font-family:var(--font-display); font-size:15.5px; margin-bottom:4px;}
+  .investor-loc{display:flex; align-items:center; gap:5px; font-size:12px; color:var(--gray-500); margin-bottom:12px;}
+  .investor-loc svg{width:12px; height:12px;}
+  .investor-meta-row{display:flex; justify-content:space-between; font-size:12px; color:var(--gray-600); padding:8px 0; border-top:1px solid var(--gray-100);}
+  .investor-meta-row span:first-child{color:var(--gray-500);}
+  .investor-tags{display:flex; gap:6px; flex-wrap:wrap; margin:12px 0 14px;}
+  .investor-tags .badge{font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:999px; background:var(--gray-100); color:var(--gray-700);}
+  .intro-btn{width:100%; justify-content:center; margin-top:4px;}
+  .intro-btn.sent{background:var(--success-bg); color:var(--success-text); cursor:default;}
+
+  /* MESSAGES */
+  .msg-layout{display:grid; grid-template-columns:300px 1fr; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); overflow:hidden; margin-bottom:48px; min-height:440px;}
+  .msg-list{border-right:1px solid var(--gray-200); overflow-y:auto; max-height:520px;}
+  .msg-item{display:block; padding:15px 18px; border-bottom:1px solid var(--gray-100); cursor:pointer;}
+  .msg-item:hover{background:var(--gray-50);}
+  .msg-item.active{background:var(--green-50); border-left:3px solid var(--green-600);}
+  .msg-item-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;}
+  .msg-item-name{font-weight:700; font-size:13px; color:var(--gray-900);}
+  .msg-item-time{font-size:10.5px; color:var(--gray-400);}
+  .msg-item-deal{font-size:11px; color:var(--green-700); font-weight:600; margin-bottom:3px;}
+  .msg-item-snippet{font-size:12px; color:var(--gray-500); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .unread-dot{width:8px; height:8px; border-radius:50%; background:var(--gold-500); display:inline-block; margin-left:6px;}
+  .msg-thread-wrap{display:flex; flex-direction:column;}
+  .msg-thread-head{padding:16px 22px; border-bottom:1px solid var(--gray-200); display:flex; justify-content:space-between; align-items:center;}
+  .msg-thread-head h4{font-family:var(--font-display); font-size:15.5px; color:var(--gray-900);}
+  .msg-thread-head .sub{font-size:11.5px; color:var(--gray-500);}
+  .msg-thread{flex:1; padding:20px 22px; overflow-y:auto; max-height:380px; display:flex; flex-direction:column; gap:12px;}
+  .msg-bubble{max-width:70%; padding:10px 14px; border-radius:14px; font-size:13px; line-height:1.5;}
+  .msg-bubble.theirs{background:var(--gray-100); color:var(--gray-800); align-self:flex-start; border-bottom-left-radius:4px;}
+  .msg-bubble.mine{background:var(--green-600); color:#fff; align-self:flex-end; border-bottom-right-radius:4px;}
+  .msg-bubble .time{display:block; font-size:10px; opacity:0.65; margin-top:4px;}
+  .msg-input-row{display:flex; gap:10px; padding:16px 22px; border-top:1px solid var(--gray-200);}
+  .msg-input-row input{flex:1; border:1.4px solid var(--gray-300); border-radius:var(--radius-pill); padding:10px 16px; font-family:var(--font-body); font-size:13px;}
+  .msg-input-row input:focus{outline:none; border-color:var(--green-500);}
+  .msg-input-row button{border-radius:50%; width:38px; height:38px; background:var(--green-600); color:#fff; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;}
+  .msg-input-row button svg{width:16px; height:16px;}
+
+  /* COMMISSION REPORT */
+  .report-intro{font-size:13.5px; color:var(--gray-600); margin-bottom:18px; max-width:640px;}
+  .stage-badge{font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; white-space:nowrap;}
+  .stage-initiation{background:var(--info-bg); color:var(--info-text);}
+  .stage-process{background:var(--gold-50); color:var(--gold-700);}
+  .stage-completion{background:var(--green-50); color:var(--green-800);}
+  .pay-status{font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px;}
+  .pay-paid{background:var(--success-bg); color:var(--success-text);}
+  .pay-pending{background:var(--warning-bg); color:var(--warning-text);}
+  .pay-notdue{background:var(--gray-100); color:var(--gray-600);}
+
+  /* EXPLAINER */
+  .explainer{background:var(--gold-50); border-radius:var(--radius-lg); padding:26px 30px; display:flex; gap:16px; align-items:flex-start; margin-bottom:60px;}
+  .explainer .icon{width:34px; height:34px; border-radius:10px; background:#fff; color:var(--gold-600); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .explainer .icon svg{width:17px; height:17px;}
+  .explainer h4{font-size:14.5px; color:var(--gold-700); margin-bottom:6px;}
+  .explainer p{font-size:13px; color:var(--gray-700); line-height:1.6;}
+
+  footer{background:var(--green-900); padding:40px 0;}
+  footer .container{display:flex; justify-content:space-between; align-items:center; color:rgba(255,255,255,0.5); font-size:12px;}
+  footer .flogo{font-family:var(--font-display); color:#fff; font-weight:600; font-size:15px;}
+
+  @media (max-width:1000px){
+    .metric-grid{grid-template-columns:repeat(2,1fr);}
+    .investor-grid{grid-template-columns:repeat(2,1fr);}
+    .form-grid{grid-template-columns:1fr;}
+    .commission-total-row{grid-template-columns:1fr;}
+    .nav-links{display:none;}
+    .profile-card{flex-direction:column; align-items:flex-start;}
+    table.dash{display:block; overflow-x:auto; white-space:nowrap;}
+    .msg-layout{grid-template-columns:1fr;}
+    .msg-list{max-height:220px; border-right:none; border-bottom:1px solid var(--gray-200);}
+  }
+  @media (max-width:680px){
+    .investor-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:600px){
+    .metric-grid{grid-template-columns:1fr;}
+    .form-type-toggle{grid-template-columns:1fr;}
+    .match-panel{padding:24px 20px;}
+    .container{padding:0 18px;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="mainnav">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="19" stroke="#E9C67D" stroke-width="1.2"/>
+        <path d="M20 11 L20 22" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 14 L15 9" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 14 L25 9" stroke="#E9C67D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 22 C 20 22, 13 24, 11 30" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M20 22 C 20 22, 20 26, 20 31" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M20 22 C 20 22, 27 24, 29 30" stroke="#B8862B" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+      Root ASAP
+    </a>
+    <div class="search-bar">
+      <input type="text" placeholder="Search your deals, buyers, messages..." />
+      <button aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html#browse">Marketplace</a>
+      <a href="index.html#business">For business owners</a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menu" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg></button>
+    <div class="nav-icons">
+      <a class="nav-icon active" href="broker-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5" stroke-linecap="round"/></svg>Broker dashboard</a>
+      <div class="notif-bell-wrap" id="notifBellWrap"></div>
+      <a class="signup-btn" href="auth.html" id="signupBtn">Sign up</a>
+      <div class="user-chip-wrap" id="userChipWrap">
+        <a class="user-chip" id="userChipLink" href="broker-dashboard.html"><span class="user-avatar" id="userAvatarInitials">--</span><span id="userChipName">Name</span></a>
+        <a class="logout-link" id="logoutLink" href="#">Log out</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="page-head">
+    <div>
+      <h1>Welcome back, <span id="welcomeName">Adeyemi Business Brokers</span></h1>
+      <p>List businesses you're representing, set your commission, and track every deal through to payout.</p>
+    </div>
+    <a class="btn btn-primary" href="#new-deal" id="createDealBtn">+ Create new deal</a>
+  </div>
+
+  <div class="profile-card">
+    <div class="profile-left">
+      <div class="avatar-lg">AB</div>
+      <div>
+        <div class="profile-label">Broker profile</div>
+        <div class="chip-row" id="brokerChipRow">
+          <span class="verified-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>Identity verified</span>
+          <span class="chip" data-chip="specialty">Business brokerage</span>
+          <span class="chip" data-chip="regions">London · Lagos · Accra</span>
+          <span class="chip">7 deals sourced</span>
+        </div>
+      </div>
+    </div>
+    <a class="btn btn-outline" href="#" data-modal-open="brokerProfileModal">Edit broker profile</a>
+  </div>
+
+  <div class="modal-overlay" id="brokerProfileModal" role="dialog" aria-modal="true" aria-label="Edit broker profile">
+    <div class="modal-card">
+      <button type="button" class="modal-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg></button>
+      <h3>Edit broker profile</h3>
+      <p class="modal-intro">This is what business owners and buyers see about your brokerage. Your previous answers are shown below.</p>
+      <div class="modal-form-grid">
+        <div class="modal-field full">
+          <label>Agency / brokerage name</label>
+          <input type="text" id="brAgencyName" value="Amadi Brokerage" />
+        </div>
+        <div class="modal-field">
+          <label>Specialty</label>
+          <select id="brSpecialty">
+            <option value="business">Business brokerage</option>
+            <option value="ma">M&amp;A advisory</option>
+            <option value="trade">Trade finance brokerage</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Regions covered</label>
+          <input type="text" id="brRegions" value="London · Lagos · Accra" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <span class="modal-save-msg" id="brSaveMsg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>Saved</span>
+        <button type="button" class="btn btn-outline modal-close">Cancel</button>
+        <button type="button" class="btn btn-primary" id="brSaveBtn">Save profile</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="label">Deals listed</div>
+      <div class="value">3</div>
+      <div class="sub">1 investment, 1 for sale, 1 in review</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">Total commission earned</div>
+      <div class="value">£1,250</div>
+      <div class="sub">Paid across all stages</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">Pending commission</div>
+      <div class="value">£1,150</div>
+      <div class="sub">Awaiting stage triggers</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">Active conversations</div>
+      <div class="value">3</div>
+      <div class="sub">Buyers in active discussion</div>
+    </div>
+  </div>
+
+  <div class="section-row">
+    <div class="section-head">
+      <h2>Your deals</h2>
+      <p>Every business you've listed, its commission structure, and where it is in the sale process.</p>
+    </div>
+  </div>
+
+  <div class="filter-tabs">
+    <span class="tab active" data-filter="all">All (3)</span>
+    <span class="tab" data-filter="live">Live (2)</span>
+    <span class="tab" data-filter="review">In review (1)</span>
+  </div>
+
+  <div class="deal-table-wrap" id="dealsTableWrap">
+    <table class="dash">
+      <tr>
+        <th>Deal</th>
+        <th>Type</th>
+        <th>Sector</th>
+        <th>Status</th>
+        <th>Commission</th>
+        <th>Stage</th>
+        <th></th>
+      </tr>
+      <tr class="dash-row" data-status="live">
+        <td class="dash-deal-name"><a href="deal.html">Lagos Foods Co. — Trade finance</a><div class="sub">Investor: Adaeze O.</div></td>
+        <td><span class="type-badge-form type-badge-investment">Investment</span></td>
+        <td>Trade &amp; import</td>
+        <td><span class="status-badge status-live">Live</span></td>
+        <td>15% · £1,500 total</td>
+        <td>
+          <div class="stage-track">
+            <span class="stage-dot done"></span><span class="stage-dot current"></span><span class="stage-dot"></span>
+            <span class="stage-track-label">Process</span>
+          </div>
+        </td>
+        <td class="dash-actions"><a class="btn btn-outline btn-sm" href="deal.html">View</a><a class="btn btn-outline btn-sm" href="#new-deal">Edit</a></td>
+      </tr>
+      <tr class="dash-row" data-status="live">
+        <td class="dash-deal-name"><a href="deal-sale.html">Accra Homes</a><div class="sub">Buyer: Kwame D.</div></td>
+        <td><span class="type-badge-form type-badge-sale">For sale</span></td>
+        <td>Real estate</td>
+        <td><span class="status-badge status-live">Live</span></td>
+        <td>12% · £900 total</td>
+        <td>
+          <div class="stage-track">
+            <span class="stage-dot done"></span><span class="stage-dot"></span><span class="stage-dot"></span>
+            <span class="stage-track-label">Initiation</span>
+          </div>
+        </td>
+        <td class="dash-actions"><a class="btn btn-outline btn-sm" href="deal-sale.html">View</a><a class="btn btn-outline btn-sm" href="#new-deal">Edit</a></td>
+      </tr>
+      <tr class="dash-row" data-status="review">
+        <td class="dash-deal-name"><a href="#">Kumasi Textiles</a><div class="sub">No investor yet</div></td>
+        <td><span class="type-badge-form type-badge-investment">Investment</span></td>
+        <td>Manufacturing</td>
+        <td><span class="status-badge status-review">Vetting in progress</span></td>
+        <td>10% · £800 total</td>
+        <td>
+          <div class="stage-track">
+            <span class="stage-dot"></span><span class="stage-dot"></span><span class="stage-dot"></span>
+            <span class="stage-track-label">Not started</span>
+          </div>
+        </td>
+        <td class="dash-actions"><a class="btn btn-outline btn-sm" href="#new-deal">Edit</a></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="form-panel" id="new-deal">
+    <h3>Create a new deal</h3>
+    <p class="form-sub">List a business you're representing and set how your commission is structured — submitted deals go through Root ASAP's vetting review before going live.</p>
+
+    <div class="form-tabs">
+      <span class="form-tab active" data-section="fp-overview">Overview</span>
+      <span class="form-tab" data-section="fp-terms">Terms</span>
+      <span class="form-tab" data-section="fp-commission">Commission</span>
+      <span class="form-tab" data-section="fp-documents">Documents</span>
+    </div>
+
+    <form onsubmit="return false;">
+
+      <!-- OVERVIEW -->
+      <div class="form-section active" id="fp-overview">
+        <p class="section-sub">What kind of deal this is, plus the hero banner, tags and "About this deal" text on the deal page.</p>
+
+        <div class="form-type-toggle">
+          <div class="ftt-option selected" data-deal-type="investment">
+            <span class="ftt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke-linecap="round"/></svg></span>
+            <div><div class="ftt-title">Business needs investment</div><div class="ftt-sub">Raise a fixed-term amount from diaspora investors</div></div>
+          </div>
+          <div class="ftt-option" data-deal-type="sale">
+            <span class="ftt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div><div class="ftt-title">Business is for sale</div><div class="ftt-sub">Ready for a full or partial sale to a buyer</div></div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field full">
+            <label>Deal title</label>
+            <input type="text" placeholder="e.g. Kumasi Textiles — Working capital raise" />
+          </div>
+          <div class="field">
+            <label>Sector</label>
+            <select>
+              <option>Trade &amp; import</option>
+              <option>Real estate</option>
+              <option>Agriculture</option>
+              <option>Manufacturing</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Business owner's name</label>
+            <input type="text" placeholder="e.g. Kofi Mensah" />
+          </div>
+          <div class="field">
+            <label>Business based in</label>
+            <input type="text" placeholder="e.g. Kumasi, Ghana" />
+          </div>
+          <div class="field">
+            <label>Your relationship to this deal</label>
+            <select>
+              <option>Exclusive sourcing agent</option>
+              <option>Non-exclusive introduction</option>
+              <option>Co-listed with the business owner</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>About this deal</label>
+            <textarea style="min-height:110px;" placeholder="Describe the business, what the funds are for, and why now."></textarea>
+          </div>
+          <div class="field full">
+            <label>Pitch images &amp; video</label>
+            <div class="upload-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div>Drag files here or click to upload</div>
+              <div class="hint">Shown at the top of the deal page's "About this deal" section.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TERMS -->
+      <div class="form-section" id="fp-terms">
+        <p class="section-sub" id="termsSectionSub">The commercial terms buyers or investors will see, separate from your commission.<span class="type-badge-form type-badge-investment" id="termsTypeBadge">Investment</span></p>
+
+        <div class="form-grid" id="termsInvestment">
+          <div class="field">
+            <label>Amount being raised</label>
+            <input type="text" placeholder="£10,000" />
+          </div>
+          <div class="field">
+            <label>Minimum ticket</label>
+            <input type="text" placeholder="£250" />
+          </div>
+          <div class="field">
+            <label>Fixed term</label>
+            <select>
+              <option>4 months</option>
+              <option>6 months</option>
+              <option selected>12 months</option>
+              <option>18 months</option>
+              <option>2 years</option>
+              <option>5 years</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Return structure</label>
+            <select>
+              <option selected>Fixed interest</option>
+              <option>Revenue share</option>
+              <option>Fixed profit share</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid" id="termsSale" style="display:none;">
+          <div class="field">
+            <label>Asking price</label>
+            <input type="text" placeholder="£95,000" />
+          </div>
+          <div class="field">
+            <label>Valuation basis</label>
+            <input type="text" placeholder="e.g. ~2× net profit" />
+          </div>
+          <div class="field">
+            <label>Deal structure</label>
+            <select>
+              <option>Full sale (100%)</option>
+              <option>Majority stake</option>
+              <option>Minority stake</option>
+              <option>Asset sale</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Reason for sale</label>
+            <select>
+              <option>Owner retirement</option>
+              <option>Pursuing a new venture</option>
+              <option>Relocation</option>
+              <option>Partnership dissolution</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>What's included in the sale</label>
+            <input type="text" placeholder="e.g. Equipment, brand, client contracts, premises lease" />
+          </div>
+          <div class="field">
+            <label>Transition support offered</label>
+            <select>
+              <option>No handover support</option>
+              <option>1-month handover</option>
+              <option selected>3-month handover</option>
+              <option>6-month handover</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMMISSION -->
+      <div class="form-section" id="fp-commission">
+        <p class="section-sub">Set your total commission and how it's released across the three stages — this works the same whether the deal is investment or a business sale. Root ASAP doesn't hold or move this money — it's agreed and paid directly between you and the business owner, and tracked here for your records.</p>
+
+        <div class="commission-total-row">
+          <div class="field">
+            <label>Commission type</label>
+            <select id="commissionType">
+              <option value="pct">% of amount raised / sale price</option>
+              <option value="flat">Flat fee</option>
+            </select>
+          </div>
+          <div class="field">
+            <label id="commissionValueLabel">Total commission (%)</label>
+            <input type="text" id="commissionValue" placeholder="e.g. 15" />
+          </div>
+        </div>
+
+        <div class="commission-stage-card">
+          <div class="cs-top">
+            <div class="cs-name"><span class="cs-num">1</span>Initiation</div>
+            <div class="cs-pct-input"><input type="number" class="stage-pct" id="stagePctInitiation" value="10" min="0" max="100" /><span>%</span></div>
+          </div>
+          <div class="cs-desc">Paid when you've introduced a buyer and they confirm they want to move forward.</div>
+        </div>
+
+        <div class="commission-stage-card">
+          <div class="cs-top">
+            <div class="cs-name"><span class="cs-num">2</span>Process</div>
+            <div class="cs-pct-input"><input type="number" class="stage-pct" id="stagePctProcess" value="40" min="0" max="100" /><span>%</span></div>
+          </div>
+          <div class="cs-desc">Paid once the buyer formally commits and terms are agreed between both sides.</div>
+        </div>
+
+        <div class="commission-stage-card">
+          <div class="cs-top">
+            <div class="cs-name"><span class="cs-num">3</span>Completion</div>
+            <div class="cs-pct-input"><input type="number" class="stage-pct" id="stagePctCompletion" value="50" min="0" max="100" /><span>%</span></div>
+          </div>
+          <div class="cs-desc">Paid when the sale closes and funds have transferred to the business owner.</div>
+        </div>
+
+        <div class="commission-total-check" id="commissionTotalCheck">Stages total 100% ✓</div>
+
+        <div class="field full" style="margin-top:18px;">
+          <label>Notes for the business owner (optional)</label>
+          <textarea placeholder="Anything about how and when you expect each stage to be paid."></textarea>
+        </div>
+      </div>
+
+      <!-- DOCUMENTS -->
+      <div class="form-section" id="fp-documents">
+        <p class="section-sub">Supporting documents for this listing — company registration is verified by Root ASAP before the deal goes live.</p>
+        <div class="doc-row">
+          <div class="doc-row-left">
+            <div class="doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg></div>
+            <div>
+              <div class="doc-name">Business plan</div>
+              <div class="doc-hint">PDF, up to 10MB</div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm file-input-btn">Upload<input type="file" /></button>
+        </div>
+        <div class="doc-row">
+          <div class="doc-row-left">
+            <div class="doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg></div>
+            <div>
+              <div class="doc-name">Financial projections</div>
+              <div class="doc-hint">XLSX or PDF, up to 10MB</div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm file-input-btn">Upload<input type="file" /></button>
+        </div>
+        <div class="doc-row">
+          <div class="doc-row-left">
+            <div class="doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg></div>
+            <div>
+              <div class="doc-name">Broker mandate / authorisation letter</div>
+              <div class="doc-hint">Confirms you're authorised to represent this business</div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm file-input-btn">Upload<input type="file" /></button>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" id="cancelDealBtn">Cancel</button>
+        <button type="button" class="btn btn-outline">Save as draft</button>
+        <button type="button" class="btn btn-primary">Submit for review</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="match-panel">
+    <div class="match-panel-top">
+      <div>
+        <h2 id="matchHeading">Find investors with AI matching</h2>
+        <p id="matchDesc">Root ASAP scores diaspora investors against your deal's sector, location, ticket size and term — surfacing the best-fit profiles first.</p>
+      </div>
+      <div style="min-width:220px;">
+        <select id="dealSelect">
+          <option value="investment" data-type="investment">Lagos Foods Co. — Trade finance (investment)</option>
+          <option value="sale" data-type="sale">Accra Homes (for sale)</option>
+        </select>
+      </div>
+    </div>
+    <div class="match-controls">
+      <span style="font-size:12.5px; color:rgba(255,255,255,0.75); margin-right:4px;" id="matchLocationLabel">Investor location:</span>
+      <span class="hub-chip active" data-hub="all">All diaspora hubs</span>
+      <span class="hub-chip" data-hub="london">London</span>
+      <span class="hub-chip" data-hub="manchester">Manchester</span>
+      <span class="hub-chip" data-hub="nyc">New York</span>
+      <span class="hub-chip" data-hub="toronto">Toronto</span>
+      <span class="hub-chip" data-hub="dubai">Dubai</span>
+    </div>
+    <div class="match-run-row">
+      <button class="btn btn-gold" id="runMatchBtn">Run AI matching</button>
+      <div class="match-spinner" id="matchSpinner"><span class="spin"></span> Scanning network for best matches…</div>
+    </div>
+  </div>
+
+  <div class="investor-results" id="investorResults">
+    <div class="results-meta" id="resultsMeta">6 investors matched to <strong>Lagos Foods Co. — Trade finance</strong> · ranked by match score</div>
+    <div class="investor-grid">
+      <div class="investor-card">
+        <div class="investor-card-top">
+          <div class="investor-avatar">AO</div>
+          <span class="match-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>96%</span>
+        </div>
+        <h4>Adaeze O.</h4>
+        <div class="investor-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.4-7-11.5A7 7 0 0119 9.5C19 14.6 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg>London, UK</div>
+        <div class="investor-tags">
+          <span class="badge">Trade &amp; import</span>
+          <span class="badge">Balanced risk</span>
+        </div>
+        <div class="investor-meta-row"><span class="im-label-ticket">Typical ticket</span><span class="im-value-ticket" data-investment="£500–£2,000" data-sale="£50,000–£150,000">£500–£2,000</span></div>
+        <div class="investor-meta-row"><span class="im-label-term">Preferred term</span><span class="im-value-term" data-investment="Up to 12 months" data-sale="3–6 months">Up to 12 months</span></div>
+        <div class="investor-meta-row"><span class="im-label-deals">Deals backed</span><span class="im-value-deals" data-investment="7" data-sale="2">7</span></div>
+        <button class="btn btn-primary intro-btn" data-state="idle">Request introduction</button>
+      </div>
+      <div class="investor-card">
+        <div class="investor-card-top">
+          <div class="investor-avatar">KD</div>
+          <span class="match-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>91%</span>
+        </div>
+        <h4>Kwame D.</h4>
+        <div class="investor-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.4-7-11.5A7 7 0 0119 9.5C19 14.6 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg>Manchester, UK</div>
+        <div class="investor-tags">
+          <span class="badge">Real estate</span>
+          <span class="badge">Growth-focused</span>
+        </div>
+        <div class="investor-meta-row"><span class="im-label-ticket">Typical ticket</span><span class="im-value-ticket" data-investment="£1,000–£5,000" data-sale="£150,000–£400,000">£1,000–£5,000</span></div>
+        <div class="investor-meta-row"><span class="im-label-term">Preferred term</span><span class="im-value-term" data-investment="Up to 18 months" data-sale="1–3 months">Up to 18 months</span></div>
+        <div class="investor-meta-row"><span class="im-label-deals">Deals backed</span><span class="im-value-deals" data-investment="4" data-sale="1">4</span></div>
+        <button class="btn btn-primary intro-btn" data-state="idle">Request introduction</button>
+      </div>
+      <div class="investor-card">
+        <div class="investor-card-top">
+          <div class="investor-avatar">NF</div>
+          <span class="match-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>88%</span>
+        </div>
+        <h4>Ngozi F.</h4>
+        <div class="investor-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.4-7-11.5A7 7 0 0119 9.5C19 14.6 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg>New York, US</div>
+        <div class="investor-tags">
+          <span class="badge">Trade &amp; import</span>
+          <span class="badge">Real estate</span>
+        </div>
+        <div class="investor-meta-row"><span class="im-label-ticket">Typical ticket</span><span class="im-value-ticket" data-investment="£2,000–£10,000" data-sale="£100,000–£350,000">£2,000–£10,000</span></div>
+        <div class="investor-meta-row"><span class="im-label-term">Preferred term</span><span class="im-value-term" data-investment="Up to 2 years" data-sale="1–4 months">Up to 2 years</span></div>
+        <div class="investor-meta-row"><span class="im-label-deals">Deals backed</span><span class="im-value-deals" data-investment="11" data-sale="3">11</span></div>
+        <button class="btn btn-primary intro-btn" data-state="idle">Request introduction</button>
+      </div>
+      <div class="investor-card">
+        <div class="investor-card-top">
+          <div class="investor-avatar">TM</div>
+          <span class="match-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>84%</span>
+        </div>
+        <h4>Tunde M.</h4>
+        <div class="investor-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.4-7-11.5A7 7 0 0119 9.5C19 14.6 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg>Toronto, Canada</div>
+        <div class="investor-tags">
+          <span class="badge">Trade &amp; import</span>
+          <span class="badge">Cautious</span>
+        </div>
+        <div class="investor-meta-row"><span class="im-label-ticket">Typical ticket</span><span class="im-value-ticket" data-investment="£250–£1,000" data-sale="£20,000–£80,000">£250–£1,000</span></div>
+        <div class="investor-meta-row"><span class="im-label-term">Preferred term</span><span class="im-value-term" data-investment="Up to 6 months" data-sale="Flexible">Up to 6 months</span></div>
+        <div class="investor-meta-row"><span class="im-label-deals">Deals backed</span><span class="im-value-deals" data-investment="2" data-sale="0">2</span></div>
+        <button class="btn btn-primary intro-btn" data-state="idle">Request introduction</button>
+      </div>
+      <div class="investor-card">
+        <div class="investor-card-top">
+          <div class="investor-avatar">SB</div>
+          <span class="match-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>79%</span>
+        </div>
+        <h4>Sade B.</h4>
+        <div class="investor-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.4-7-11.5A7 7 0 0119 9.5C19 14.6 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg>London, UK</div>
+        <div class="investor-tags">
+          <span class="badge">Manufacturing</span>
+          <span class="badge">Balanced risk</span>
+        </div>
+        <div class="investor-meta-row"><span class="im-label-ticket">Typical ticket</span><span class="im-value-ticket" data-investment="£500–£1,500" data-sale="£40,000–£120,000">£500–£1,500</span></div>
+        <div class="investor-meta-row"><span class="im-label-term">Preferred term</span><span class="im-value-term" data-investment="Up to 12 months" data-sale="2–5 months">Up to 12 months</span></div>
+        <div class="investor-meta-row"><span class="im-label-deals">Deals backed</span><span class="im-value-deals" data-investment="5" data-sale="1">5</span></div>
+        <button class="btn btn-primary intro-btn" data-state="idle">Request introduction</button>
+      </div>
+      <div class="investor-card">
+        <div class="investor-card-top">
+          <div class="investor-avatar">EC</div>
+          <span class="match-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.1 6.6.7-4.9 4.6 1.3 6.5L12 16.9l-5.9 3 1.3-6.5-4.9-4.6 6.6-.7z"/></svg>75%</span>
+        </div>
+        <h4>Emeka C.</h4>
+        <div class="investor-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.4-7-11.5A7 7 0 0119 9.5C19 14.6 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg>Dubai, UAE</div>
+        <div class="investor-tags">
+          <span class="badge">Trade &amp; import</span>
+          <span class="badge">Growth-focused</span>
+        </div>
+        <div class="investor-meta-row"><span class="im-label-ticket">Typical ticket</span><span class="im-value-ticket" data-investment="£1,000–£4,000" data-sale="£80,000–£250,000">£1,000–£4,000</span></div>
+        <div class="investor-meta-row"><span class="im-label-term">Preferred term</span><span class="im-value-term" data-investment="Up to 18 months" data-sale="2–4 months">Up to 18 months</span></div>
+        <div class="investor-meta-row"><span class="im-label-deals">Deals backed</span><span class="im-value-deals" data-investment="6" data-sale="2">6</span></div>
+        <button class="btn btn-primary intro-btn" data-state="idle">Request introduction</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-row">
+    <div class="section-head">
+      <h2>Buyer conversations</h2>
+      <p>Message investors who've expressed interest in a deal you've listed.</p>
+    </div>
+  </div>
+
+  <div class="msg-layout">
+    <div class="msg-list" id="msgList">
+      <div class="msg-item active" data-thread="adaeze">
+        <div class="msg-item-top"><span class="msg-item-name">Adaeze O.</span><span class="msg-item-time">2h ago</span></div>
+        <div class="msg-item-deal">Lagos Foods Co. — Trade finance</div>
+        <div class="msg-item-snippet">Can you share the updated financials?<span class="unread-dot"></span></div>
+      </div>
+      <div class="msg-item" data-thread="kwame">
+        <div class="msg-item-top"><span class="msg-item-name">Kwame D.</span><span class="msg-item-time">1d ago</span></div>
+        <div class="msg-item-deal">Accra Homes</div>
+        <div class="msg-item-snippet">Sounds good, moving forward with terms.</div>
+      </div>
+      <div class="msg-item" data-thread="ngozi">
+        <div class="msg-item-top"><span class="msg-item-name">Ngozi F.</span><span class="msg-item-time">3d ago</span></div>
+        <div class="msg-item-deal">Kumasi Textiles</div>
+        <div class="msg-item-snippet">Interested — need more info on track record.</div>
+      </div>
+    </div>
+    <div class="msg-thread-wrap">
+      <div class="msg-thread-head">
+        <div>
+          <h4 id="threadName">Adaeze O.</h4>
+          <div class="sub" id="threadDeal">Re: Lagos Foods Co. — Trade finance</div>
+        </div>
+        <a class="btn btn-outline btn-sm" href="deal.html">View deal</a>
+      </div>
+      <div class="msg-thread" id="msgThread">
+        <div class="msg-bubble theirs">Hi — I've reviewed the deal page, looks promising. Can you share the updated financials before I confirm my ticket?<span class="time">10:14</span></div>
+        <div class="msg-bubble mine">Of course — sending the latest projections over now. Anything specific you'd like broken out?<span class="time">10:22</span></div>
+        <div class="msg-bubble theirs">Mainly the repayment schedule and how the container timing lines up with the harvest window.<span class="time">10:26</span></div>
+      </div>
+      <div class="msg-input-row">
+        <input type="text" id="msgInput" placeholder="Write a message…" />
+        <button type="button" id="msgSendBtn" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-row">
+    <div class="section-head">
+      <h2>Commission report</h2>
+      <p>Every stage payment across your deals, whether it's been paid, is pending, or isn't triggered yet.</p>
+    </div>
+  </div>
+  <p class="report-intro">Stages are marked "Paid" once you confirm you've received it, "Pending" once the trigger event has happened, and "Not yet due" until then.</p>
+
+  <div class="deal-table-wrap">
+    <table class="dash">
+      <tr>
+        <th>Deal</th>
+        <th>Buyer</th>
+        <th>Stage</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Date</th>
+      </tr>
+      <tr class="dash-row">
+        <td class="dash-deal-name">Lagos Foods Co. — Trade finance</td>
+        <td>Adaeze O.</td>
+        <td><span class="stage-badge stage-initiation">Initiation</span></td>
+        <td>£150</td>
+        <td><span class="pay-status pay-paid">Paid</span></td>
+        <td>20 Jul 2026</td>
+      </tr>
+      <tr class="dash-row">
+        <td class="dash-deal-name">Lagos Foods Co. — Trade finance</td>
+        <td>Adaeze O.</td>
+        <td><span class="stage-badge stage-process">Process</span></td>
+        <td>£600</td>
+        <td><span class="pay-status pay-paid">Paid</span></td>
+        <td>2 Aug 2026</td>
+      </tr>
+      <tr class="dash-row">
+        <td class="dash-deal-name">Lagos Foods Co. — Trade finance</td>
+        <td>Adaeze O.</td>
+        <td><span class="stage-badge stage-completion">Completion</span></td>
+        <td>£750</td>
+        <td><span class="pay-status pay-pending">Pending</span></td>
+        <td>Due on close</td>
+      </tr>
+      <tr class="dash-row">
+        <td class="dash-deal-name">Accra Homes</td>
+        <td>Kwame D.</td>
+        <td><span class="stage-badge stage-initiation">Initiation</span></td>
+        <td>£100</td>
+        <td><span class="pay-status pay-paid">Paid</span></td>
+        <td>15 Jul 2026</td>
+      </tr>
+      <tr class="dash-row">
+        <td class="dash-deal-name">Accra Homes</td>
+        <td>Kwame D.</td>
+        <td><span class="stage-badge stage-process">Process</span></td>
+        <td>£400</td>
+        <td><span class="pay-status pay-notdue">Not yet due</span></td>
+        <td>—</td>
+      </tr>
+      <tr class="dash-row">
+        <td class="dash-deal-name">Accra Homes</td>
+        <td>Kwame D.</td>
+        <td><span class="stage-badge stage-completion">Completion</span></td>
+        <td>£400</td>
+        <td><span class="pay-status pay-notdue">Not yet due</span></td>
+        <td>—</td>
+      </tr>
+      <tr class="dash-row">
+        <td class="dash-deal-name">Kumasi Textiles</td>
+        <td>—</td>
+        <td><span class="stage-badge stage-initiation">Initiation</span></td>
+        <td>£80</td>
+        <td><span class="pay-status pay-notdue">Not yet due</span></td>
+        <td>—</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="explainer">
+    <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div>
+      <h4>How staged commission works on Root ASAP</h4>
+      <p>You set your total commission and how it splits across three stages — initiation, process and completion — when you list a deal. Root ASAP never holds or transfers this money: each stage is paid directly by the business owner once its trigger event happens, and this dashboard is where you record and track that it's happened. Marking a stage "Paid" here is a record for you and the business owner, not a payment instruction.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <span class="flogo">Root ASAP</span>
+    <span>© 2026 Root ASAP · <a href="index.html" style="color:rgba(255,255,255,0.7);">Back to home</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var session = null;
+  try { session = JSON.parse(localStorage.getItem('rootasap_session')); } catch(e){}
+  if(session && session.name){
+    var signupBtn = document.getElementById('signupBtn');
+    var chipWrap = document.getElementById('userChipWrap');
+    var chipLink = document.getElementById('userChipLink');
+    var avatarEl = document.getElementById('userAvatarInitials');
+    var nameEl = document.getElementById('userChipName');
+    var logoutLink = document.getElementById('logoutLink');
+    var welcomeEl = document.getElementById('welcomeName');
+    var dashboardUrl = session.role === 'business' ? 'business-dashboard.html' : (session.role === 'investor' ? 'dashboard.html' : 'broker-dashboard.html');
+    var displayName = session.agencyName || session.name;
+    if(signupBtn) signupBtn.style.display = 'none';
+    if(chipWrap) chipWrap.style.display = 'flex';
+    var initials = displayName.split(' ').map(function(p){ return p[0]; }).join('').slice(0,2).toUpperCase();
+    if(avatarEl) avatarEl.textContent = initials;
+    if(nameEl) nameEl.textContent = displayName.split(' ')[0];
+    if(chipLink) chipLink.setAttribute('href', dashboardUrl);
+    if(welcomeEl) welcomeEl.textContent = displayName;
+    if(logoutLink) logoutLink.addEventListener('click', function(e){
+      e.preventDefault();
+      localStorage.removeItem('rootasap_session');
+      window.location.href = 'index.html';
+    });
+  }
+})();
+
+(function(){
+  // deal status filter tabs
+  var tabs = document.querySelectorAll('.filter-tabs .tab');
+  var rows = document.querySelectorAll('#dealsTableWrap .dash-row');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+      var filter = tab.getAttribute('data-filter');
+      rows.forEach(function(row){
+        row.style.display = (filter === 'all' || row.getAttribute('data-status') === filter) ? '' : 'none';
+      });
+    });
+  });
+
+  // create/cancel deal form toggle
+  var formPanel = document.getElementById('new-deal');
+  var createBtn = document.getElementById('createDealBtn');
+  var cancelBtn = document.getElementById('cancelDealBtn');
+  createBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    formPanel.classList.add('open');
+    formPanel.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  cancelBtn.addEventListener('click', function(){
+    formPanel.classList.remove('open');
+  });
+
+  // deal type toggle (investment vs for sale)
+  var fttOptions = document.querySelectorAll('.ftt-option');
+  var termsInvestment = document.getElementById('termsInvestment');
+  var termsSale = document.getElementById('termsSale');
+  var termsSectionSub = document.getElementById('termsSectionSub');
+  var termsTypeBadge = document.getElementById('termsTypeBadge');
+  var termsSubText = {
+    investment: 'The commercial terms investors will see, separate from your commission.',
+    sale: 'The asking price and sale terms buyers will see, separate from your commission.'
+  };
+  fttOptions.forEach(function(opt){
+    opt.addEventListener('click', function(){
+      fttOptions.forEach(function(o){ o.classList.remove('selected'); });
+      opt.classList.add('selected');
+      var type = opt.getAttribute('data-deal-type');
+      if(type === 'sale'){
+        termsInvestment.style.display = 'none';
+        termsSale.style.display = '';
+        termsTypeBadge.textContent = 'For sale';
+        termsTypeBadge.className = 'type-badge-form type-badge-sale';
+      } else {
+        termsInvestment.style.display = '';
+        termsSale.style.display = 'none';
+        termsTypeBadge.textContent = 'Investment';
+        termsTypeBadge.className = 'type-badge-form type-badge-investment';
+      }
+      termsSectionSub.firstChild.textContent = termsSubText[type];
+    });
+  });
+
+  // AI matching panel
+  var dealSelect = document.getElementById('dealSelect');
+  var matchLocationLabel = document.getElementById('matchLocationLabel');
+  var matchHeading = document.getElementById('matchHeading');
+  var matchDesc = document.getElementById('matchDesc');
+  var hubChips = document.querySelectorAll('.hub-chip');
+  var runMatchBtn = document.getElementById('runMatchBtn');
+  var matchSpinner = document.getElementById('matchSpinner');
+  var investorResults = document.getElementById('investorResults');
+  var resultsMeta = document.getElementById('resultsMeta');
+  var activeHub = 'all';
+  var hubNames = { all: 'all diaspora hubs', london: 'London', manchester: 'Manchester', nyc: 'New York', toronto: 'Toronto', dubai: 'Dubai' };
+
+  var matchCopy = {
+    investment: {
+      heading: 'Find investors with AI matching',
+      desc: "Root ASAP scores diaspora investors against your deal's sector, location, ticket size and term — surfacing the best-fit profiles first.",
+      locLabel: 'Investor location:',
+      dealName: 'Lagos Foods Co. — Trade finance',
+      metaWord: 'investors',
+      button: 'Request introduction'
+    },
+    sale: {
+      heading: 'Find buyers with AI matching',
+      desc: "Root ASAP scores diaspora buyers against your listing's sector, location, budget and acquisition timeline — surfacing the best-fit profiles first.",
+      locLabel: 'Buyer location:',
+      dealName: 'Accra Homes',
+      metaWord: 'buyers',
+      button: 'Request introduction'
+    }
+  };
+
+  function currentDealType(){
+    var opt = dealSelect.options[dealSelect.selectedIndex];
+    return opt.getAttribute('data-type');
+  }
+
+  function applyDealTypeCopy(){
+    var type = currentDealType();
+    var copy = matchCopy[type];
+    matchHeading.textContent = copy.heading;
+    matchDesc.textContent = copy.desc;
+    matchLocationLabel.textContent = copy.locLabel;
+    document.querySelectorAll('.im-value-ticket').forEach(function(el){ el.textContent = el.getAttribute('data-' + type); });
+    document.querySelectorAll('.im-value-term').forEach(function(el){ el.textContent = el.getAttribute('data-' + type); });
+    document.querySelectorAll('.im-value-deals').forEach(function(el){ el.textContent = el.getAttribute('data-' + type); });
+    document.querySelectorAll('.im-label-ticket').forEach(function(el){ el.textContent = type === 'sale' ? 'Typical budget' : 'Typical ticket'; });
+    document.querySelectorAll('.im-label-term').forEach(function(el){ el.textContent = type === 'sale' ? 'Acquisition timeline' : 'Preferred term'; });
+    document.querySelectorAll('.im-label-deals').forEach(function(el){ el.textContent = type === 'sale' ? 'Businesses acquired' : 'Deals backed'; });
+    document.querySelectorAll('.intro-btn').forEach(function(btn){
+      btn.textContent = copy.button;
+      btn.classList.remove('sent');
+      btn.setAttribute('data-state', 'idle');
+    });
+    investorResults.classList.remove('show');
+  }
+
+  dealSelect.addEventListener('change', applyDealTypeCopy);
+  applyDealTypeCopy();
+
+  hubChips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      hubChips.forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      activeHub = chip.getAttribute('data-hub');
+    });
+  });
+
+  runMatchBtn.addEventListener('click', function(){
+    var type = currentDealType();
+    var copy = matchCopy[type];
+    matchSpinner.classList.add('show');
+    investorResults.classList.remove('show');
+    runMatchBtn.disabled = true;
+    setTimeout(function(){
+      matchSpinner.classList.remove('show');
+      runMatchBtn.disabled = false;
+      resultsMeta.innerHTML = '6 ' + copy.metaWord + ' matched to <strong>' + copy.dealName + '</strong> · filtered by ' + hubNames[activeHub] + ' · ranked by match score';
+      investorResults.classList.add('show');
+      investorResults.scrollIntoView({behavior:'smooth', block:'start'});
+      if(window.RootASAPNotify){
+        window.RootASAPNotify.push({
+          type: 'match',
+          title: 'AI matching complete',
+          message: '6 ' + copy.metaWord + ' matched to ' + copy.dealName + '.'
+        });
+      }
+    }, 1200);
+  });
+
+  // edit broker profile
+  (function(){
+    var STORAGE_KEY = 'rootasap_broker_profile';
+    var SPECIALTY_LABELS = {business:'Business brokerage', ma:'M&A advisory', trade:'Trade finance brokerage'};
+    var defaults = { agencyName:'Amadi Brokerage', specialty:'business', regions:'London · Lagos · Accra' };
+
+    function loadProfile(){
+      try {
+        var saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if(saved && saved.agencyName) return saved;
+      } catch(e){}
+      return defaults;
+    }
+
+    function renderChips(profile){
+      var specialtyChip = document.querySelector('#brokerChipRow [data-chip="specialty"]');
+      var regionsChip = document.querySelector('#brokerChipRow [data-chip="regions"]');
+      if(specialtyChip) specialtyChip.textContent = SPECIALTY_LABELS[profile.specialty];
+      if(regionsChip) regionsChip.textContent = profile.regions;
+    }
+
+    function populateForm(profile){
+      var nameEl = document.getElementById('brAgencyName');
+      var specialtyEl = document.getElementById('brSpecialty');
+      var regionsEl = document.getElementById('brRegions');
+      if(nameEl) nameEl.value = profile.agencyName;
+      if(specialtyEl) specialtyEl.value = profile.specialty;
+      if(regionsEl) regionsEl.value = profile.regions;
+    }
+
+    var profile = loadProfile();
+    renderChips(profile);
+    populateForm(profile);
+
+    var saveBtn = document.getElementById('brSaveBtn');
+    var saveMsg = document.getElementById('brSaveMsg');
+    if(saveBtn){
+      saveBtn.addEventListener('click', function(){
+        profile = {
+          agencyName: document.getElementById('brAgencyName').value.trim() || defaults.agencyName,
+          specialty: document.getElementById('brSpecialty').value,
+          regions: document.getElementById('brRegions').value.trim() || defaults.regions
+        };
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); } catch(e){}
+        renderChips(profile);
+        if(saveMsg){
+          saveMsg.classList.add('show');
+          setTimeout(function(){ saveMsg.classList.remove('show'); }, 2200);
+        }
+        if(window.RootASAPNotify){
+          window.RootASAPNotify.push({
+            type: 'system',
+            title: 'Broker profile updated',
+            message: 'Your brokerage profile details were saved.'
+          });
+        }
+      });
+    }
+  })();
+
+  document.querySelectorAll('.intro-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(btn.getAttribute('data-state') === 'sent') return;
+      btn.textContent = 'Introduction requested ✓';
+      btn.classList.add('sent');
+      btn.setAttribute('data-state', 'sent');
+      var card = btn.closest('.investor-card');
+      var nameEl = card ? card.querySelector('h4') : null;
+      var name = nameEl ? nameEl.textContent : 'the contact';
+      if(window.RootASAPNotify){
+        window.RootASAPNotify.push({
+          type: 'intro',
+          title: 'Introduction requested',
+          message: 'You requested an introduction to ' + name + '.'
+        });
+      }
+    });
+  });
+
+  // deal-form section tabs
+  var formTabs = document.querySelectorAll('.form-tab');
+  var formSections = document.querySelectorAll('.form-section');
+  formTabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      formTabs.forEach(function(t){ t.classList.remove('active'); });
+      formSections.forEach(function(s){ s.classList.remove('active'); });
+      tab.classList.add('active');
+      document.getElementById(tab.getAttribute('data-section')).classList.add('active');
+      formPanel.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  // commission type label swap
+  var commissionType = document.getElementById('commissionType');
+  var commissionValueLabel = document.getElementById('commissionValueLabel');
+  commissionType.addEventListener('change', function(){
+    commissionValueLabel.textContent = commissionType.value === 'flat' ? 'Total commission (£)' : 'Total commission (%)';
+  });
+
+  // commission stage split validation
+  var stageInputs = [document.getElementById('stagePctInitiation'), document.getElementById('stagePctProcess'), document.getElementById('stagePctCompletion')];
+  var totalCheck = document.getElementById('commissionTotalCheck');
+  function checkStageTotal(){
+    var sum = stageInputs.reduce(function(acc, el){ return acc + (parseFloat(el.value) || 0); }, 0);
+    if(sum === 100){
+      totalCheck.textContent = 'Stages total 100% ✓';
+      totalCheck.classList.remove('invalid');
+    } else {
+      totalCheck.textContent = 'Stages total ' + sum + '% — adjust so they add up to 100%';
+      totalCheck.classList.add('invalid');
+    }
+  }
+  stageInputs.forEach(function(el){ el.addEventListener('input', checkStageTotal); });
+  checkStageTotal();
+
+  // messaging: switch threads (demo content only, same thread shown for all — swap header + snippet read state)
+  var msgItems = document.querySelectorAll('.msg-item');
+  var threadName = document.getElementById('threadName');
+  var threadDeal = document.getElementById('threadDeal');
+  var dealByThread = {
+    adaeze: 'Re: Lagos Foods Co. — Trade finance',
+    kwame: 'Re: Accra Homes',
+    ngozi: 'Re: Kumasi Textiles'
+  };
+  var nameByThread = { adaeze: 'Adaeze O.', kwame: 'Kwame D.', ngozi: 'Ngozi F.' };
+  msgItems.forEach(function(item){
+    item.addEventListener('click', function(){
+      msgItems.forEach(function(i){ i.classList.remove('active'); });
+      item.classList.add('active');
+      var key = item.getAttribute('data-thread');
+      threadName.textContent = nameByThread[key];
+      threadDeal.textContent = dealByThread[key];
+      var dot = item.querySelector('.unread-dot');
+      if(dot) dot.remove();
+    });
+  });
+
+  // send message (appends to current thread, demo only)
+  var msgInput = document.getElementById('msgInput');
+  var msgSendBtn = document.getElementById('msgSendBtn');
+  var msgThread = document.getElementById('msgThread');
+  function sendMessage(){
+    var text = msgInput.value.trim();
+    if(!text) return;
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble mine';
+    var now = new Date();
+    var hh = String(now.getHours()).padStart(2,'0');
+    var mm = String(now.getMinutes()).padStart(2,'0');
+    bubble.innerHTML = text.replace(/</g,'&lt;') + '<span class="time">' + hh + ':' + mm + '</span>';
+    msgThread.appendChild(bubble);
+    msgThread.scrollTop = msgThread.scrollHeight;
+    msgInput.value = '';
+    var replyName = threadName.textContent || 'Contact';
+    setTimeout(function(){
+      if(window.RootASAPNotify){
+        window.RootASAPNotify.push({
+          type: 'message',
+          title: 'New message from ' + replyName,
+          message: 'Reply received in ' + (threadDeal.textContent || 'your conversation') + '.'
+        });
+      }
+    }, 2200);
+  }
+  msgSendBtn.addEventListener('click', sendMessage);
+  msgInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') sendMessage(); });
+})();
+</script>
+<script src="notifications.js"></script>
+
+</body>
+</html>
