@@ -43,13 +43,20 @@
   nav.mainnav .container{display:flex; align-items:center; gap:24px;}
   .logo{font-family:var(--font-display); font-weight:600; font-size:19px; color:#fff; display:flex; align-items:center; gap:8px; flex-shrink:0;}
   .logo svg{width:20px; height:20px;}
-  .search-bar{flex:1; display:flex; align-items:center; background:#fff; border-radius:var(--radius-pill); padding:4px 4px 4px 18px; max-width:640px;}
-  .search-bar input{border:none; outline:none; flex:1; font-family:var(--font-body); font-size:14px; padding:9px 0; color:var(--gray-800);}
+  .search-bar{flex:1; min-width:0; display:flex; align-items:center; background:#fff; border-radius:var(--radius-pill); padding:4px 4px 4px 18px; max-width:640px;}
+  .search-bar input{border:none; outline:none; flex:1; min-width:0; font-family:var(--font-body); font-size:14px; padding:9px 0; color:var(--gray-800);}
   .search-bar input::placeholder{color:var(--gray-400);}
   .search-bar button{background:var(--gold-500); border:none; border-radius:var(--radius-pill); width:38px; height:38px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#2E2107;}
   .search-bar button svg{width:17px; height:17px;}
   .nav-links{display:flex; gap:26px; font-size:13.5px; font-weight:500; color:rgba(255,255,255,0.75); flex-shrink:0;}
   .nav-links a:hover, .nav-links a.active{color:#fff;}
+  .nav-hamburger{display:none; background:none; border:none; padding:6px; margin:0; cursor:pointer; color:#fff; align-items:center; justify-content:center; flex-shrink:0;}
+  .nav-hamburger svg{width:22px; height:22px; display:block;}
+  .nav-drawer{display:none; flex-direction:column; background:var(--green-800);}
+  .nav-drawer.open{display:flex;}
+  .nav-drawer-links{display:flex; flex-direction:column;}
+  .nav-drawer a{display:block; padding:12px 28px; color:rgba(255,255,255,0.85); font-size:14px; font-weight:600; border-bottom:1px solid rgba(255,255,255,0.08); text-decoration:none;}
+  .nav-drawer a:last-child{border-bottom:none;}
   .nav-icons{display:flex; align-items:center; gap:20px; flex-shrink:0;}
   .nav-icon{display:flex; flex-direction:column; align-items:center; gap:2px; color:rgba(255,255,255,0.85); font-size:11px; font-weight:600;}
   .nav-icon.active{color:var(--gold-300);}
@@ -157,6 +164,7 @@
     .metric-grid{grid-template-columns:repeat(2,1fr);}
     .deal-grid{grid-template-columns:repeat(2,1fr);}
     .nav-links{display:none;}
+    .nav-hamburger{display:flex;}
     .profile-card{flex-direction:column; align-items:flex-start;}
     table.dash{display:block; overflow-x:auto; white-space:nowrap;}
   }
@@ -167,6 +175,15 @@
     .match-controls-block .match-controls{gap:8px;}
     .match-panel{padding:24px 20px;}
     .container{padding:0 18px;}
+  }
+
+  @media (max-width:700px){
+    nav.mainnav .container{gap:10px;}
+    .nav-icons > .nav-icon{display:none;}
+  }
+  @media (max-width:480px){
+    .signup-btn{padding:8px 14px; font-size:12px;}
+    #userChipName{display:none;}
   }
 </style>
 </head>
@@ -206,6 +223,7 @@
       </div>
     </div>
   </div>
+  <div class="nav-drawer" id="navDrawer"></div>
 </nav>
 
 <div class="container">
@@ -660,5 +678,31 @@
 </script>
 <script src="notifications.js"></script>
 
+
+<script>
+(function(){
+  var hamburger = document.getElementById('navHamburger');
+  var drawer = document.getElementById('navDrawer');
+  if(!hamburger || !drawer) return;
+  var navLinks = document.querySelector('nav.mainnav .nav-links');
+  if(navLinks){
+    var clone = navLinks.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.className = 'nav-drawer-links';
+    drawer.appendChild(clone);
+  }
+  var dashIcon = document.querySelector('nav.mainnav .nav-icons > a.nav-icon');
+  if(dashIcon){
+    var a = document.createElement('a');
+    a.href = dashIcon.getAttribute('href');
+    a.textContent = dashIcon.textContent.trim();
+    drawer.appendChild(a);
+  }
+  hamburger.addEventListener('click', function(){
+    var isOpen = drawer.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+})();
+</script>
 </body>
 </html>
